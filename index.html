@@ -19,9 +19,9 @@
       --gold: #ffcc55;
       --gold-deep: #ed9f1b;
       --green: #58d68d;
-      --columns: 4;
-      --rows: 2;
-      --header-h: clamp(78px, 9.2vh, 108px);
+      --columns: 2;
+      --rows: 10;
+      --header-h: clamp(76px, 8.5vh, 96px);
       --footer-h: clamp(42px, 5.1vh, 58px);
       font-family: Inter, "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
     }
@@ -205,30 +205,41 @@
     .stage {
       position: relative;
       min-height: 0;
-      padding: clamp(13px, 1.65vh, 20px) clamp(18px, 2vw, 38px);
+      padding: clamp(8px, 1vh, 12px) clamp(14px, 1.45vw, 28px);
     }
 
     .grid {
       display: grid;
       grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
       grid-template-rows: repeat(var(--rows), minmax(0, 1fr));
+      grid-auto-flow: column;
       width: 100%;
       height: 100%;
-      gap: clamp(10px, 1.25vw, 22px);
+      gap: clamp(5px, .65vh, 8px) clamp(10px, 1vw, 18px);
     }
 
     .card {
       position: relative;
       display: grid;
-      grid-template-rows: minmax(0, 1fr) auto auto;
+      grid-template-columns:
+        clamp(92px, 6vw, 126px)
+        minmax(150px, 1fr)
+        minmax(166px, .72fr)
+        minmax(166px, .72fr);
+      grid-template-rows: minmax(0, 1fr);
+      align-items: stretch;
       min-width: 0;
       min-height: 0;
       overflow: hidden;
       border: 1px solid rgba(255,255,255,.15);
-      border-radius: clamp(12px, 1.05vw, 20px);
-      background: linear-gradient(165deg, rgba(29,31,41,.99), rgba(14,16,23,.99));
-      box-shadow: 0 14px 34px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.08);
+      border-radius: clamp(9px, .7vw, 13px);
+      background: linear-gradient(100deg, rgba(29,31,41,.99), rgba(14,16,23,.99));
+      box-shadow: 0 8px 20px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.07);
       animation: card-in .46s both cubic-bezier(.2,.78,.26,1);
+    }
+
+    .card:nth-child(even) {
+      background: linear-gradient(100deg, rgba(25,27,36,.99), rgba(11,13,19,.99));
     }
 
     .card::after {
@@ -242,7 +253,7 @@
 
     .card.has-special {
       border-color: rgba(255, 190, 51, .5);
-      box-shadow: 0 14px 34px rgba(0,0,0,.34), 0 0 22px rgba(237,159,27,.09), inset 0 1px 0 rgba(255,255,255,.09);
+      box-shadow: 0 8px 20px rgba(0,0,0,.3), 0 0 18px rgba(237,159,27,.08), inset 0 1px 0 rgba(255,255,255,.08);
     }
 
     .image-wrap {
@@ -251,30 +262,34 @@
       place-items: center;
       min-height: 0;
       overflow: hidden;
-      padding: clamp(8px, .9vh, 13px) 12px 5px;
-      background:
-        radial-gradient(circle at 50% 50%, rgba(255,255,255,.07), transparent 58%),
-        linear-gradient(180deg, rgba(255,255,255,.028), transparent);
+      margin: 4px;
+      padding: 3px 6px;
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 8px;
+      background: #f5f5f2;
     }
 
     .card-image {
       display: block;
       width: 100%;
       height: 100%;
+      max-width: 100%;
+      max-height: 100%;
       object-fit: contain;
-      filter: drop-shadow(0 9px 9px rgba(0,0,0,.42));
+      object-position: center;
+      filter: drop-shadow(0 4px 5px rgba(0,0,0,.25));
     }
 
     .image-fallback {
       display: none;
       place-items: center;
-      width: min(64%, 170px);
-      aspect-ratio: .715;
+      width: min(70%, 96px);
+      aspect-ratio: 1.25;
       border: 1px solid rgba(255,255,255,.17);
       border-radius: 10px;
       color: rgba(255,255,255,.56);
       background: linear-gradient(145deg, rgba(255,255,255,.08), rgba(255,255,255,.015));
-      font-size: clamp(20px, 2vw, 36px);
+      font-size: clamp(9px, .65vw, 12px);
       font-weight: 1000;
       letter-spacing: .08em;
     }
@@ -287,77 +302,63 @@
       display: grid;
     }
 
-    .special-ribbon {
-      position: absolute;
-      z-index: 2;
-      top: 11px;
-      right: -32px;
-      width: 140px;
-      padding: 6px 0;
-      transform: rotate(38deg);
-      color: #241400;
-      background: linear-gradient(90deg, #f5a91b, #ffe083, #efa115);
-      box-shadow: 0 5px 18px rgba(0,0,0,.32);
-      font-size: clamp(9px, .62vw, 12px);
-      font-weight: 1000;
-      text-align: center;
-      letter-spacing: .08em;
-    }
-
     .card-name {
       display: -webkit-box;
       overflow: hidden;
-      min-height: 2.45em;
+      align-self: center;
+      min-height: 0;
       margin: 0;
-      padding: 4px clamp(12px, 1vw, 18px) 6px;
+      padding: 3px clamp(9px, .75vw, 14px);
       color: #fff;
-      font-size: clamp(14px, 1.05vw, 20px);
+      font-size: clamp(13px, .88vw, 18px);
       font-weight: 950;
-      line-height: 1.22;
+      line-height: 1.18;
       letter-spacing: .015em;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 2;
     }
 
     .price-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 7px;
-      padding: 0 clamp(10px, .85vw, 16px) clamp(10px, 1vh, 15px);
-    }
-
-    .price-grid.is-single {
-      grid-template-columns: 1fr;
+      display: contents;
     }
 
     .price-box {
       position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-rows: auto minmax(0, 1fr);
+      align-items: center;
+      gap: 0 6px;
       min-width: 0;
       overflow: hidden;
-      padding: clamp(6px, .6vh, 9px) clamp(8px, .65vw, 12px);
+      margin: 4px 4px 4px 0;
+      padding: 5px 6px 5px 10px;
       border: 1px solid rgba(255,255,255,.11);
-      border-radius: 10px;
-      background: rgba(255,255,255,.045);
+      border-left: 3px solid rgba(255,255,255,.72);
+      border-radius: 9px;
+      background: linear-gradient(145deg, rgba(255,255,255,.085), rgba(255,255,255,.025));
     }
 
     .price-box.special {
       border-color: rgba(255,190,51,.52);
+      border-left: 3px solid var(--gold);
       background: linear-gradient(145deg, rgba(255,190,51,.18), rgba(237,159,27,.075));
     }
 
-    .price-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 7px;
-      margin-bottom: 2px;
+    .price-box.is-unavailable {
+      border-color: rgba(255,255,255,.075);
+      border-left-color: rgba(255,255,255,.18);
+      opacity: .5;
+      background: rgba(255,255,255,.018);
     }
 
     .price-label {
+      grid-column: 1;
+      grid-row: 1;
       color: var(--muted);
-      font-size: clamp(9px, .62vw, 12px);
+      font-size: clamp(9px, .58vw, 11px);
       font-weight: 950;
-      letter-spacing: .06em;
+      letter-spacing: .08em;
       white-space: nowrap;
     }
 
@@ -366,30 +367,56 @@
     }
 
     .stock {
-      flex: none;
-      padding: 2px 6px;
-      border-radius: 999px;
-      color: rgba(255,255,255,.86);
-      background: rgba(255,255,255,.08);
-      font-size: clamp(8px, .54vw, 11px);
-      font-weight: 900;
+      grid-column: 2;
+      grid-row: 1 / 3;
+      display: grid;
+      place-items: center;
+      align-content: center;
+      min-width: clamp(43px, 3vw, 58px);
+      height: 100%;
+      padding: 3px 5px;
+      border-radius: 7px;
+      color: #fff;
+      background: linear-gradient(145deg, #ef3a43, #a50f17);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 4px 10px rgba(0,0,0,.2);
       white-space: nowrap;
     }
 
     .special .stock {
       color: #261700;
-      background: var(--gold);
+      background: linear-gradient(145deg, #ffe07a, #f0a51e);
     }
 
-    .price {
-      overflow: hidden;
-      color: #fff;
-      font-size: clamp(20px, 1.75vw, 34px);
+    .is-unavailable .stock {
+      color: rgba(255,255,255,.7);
+      background: rgba(255,255,255,.08);
+      box-shadow: none;
+    }
+
+    .stock-label {
+      font-size: clamp(8px, .5vw, 10px);
+      font-weight: 950;
+      line-height: 1;
+      letter-spacing: .08em;
+    }
+
+    .stock-count {
+      font-size: clamp(17px, 1.18vw, 25px);
       font-weight: 1000;
       font-variant-numeric: tabular-nums;
       line-height: 1.02;
-      letter-spacing: -.045em;
-      text-overflow: ellipsis;
+    }
+
+    .price {
+      grid-column: 1;
+      grid-row: 2;
+      align-self: center;
+      color: #fff;
+      font-size: clamp(21px, 1.45vw, 31px);
+      font-weight: 1000;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.02;
+      letter-spacing: -.055em;
       white-space: nowrap;
       text-shadow: 0 2px 0 rgba(0,0,0,.28);
     }
@@ -398,8 +425,8 @@
       color: var(--gold);
     }
 
-    .price-grid.is-single .price {
-      font-size: clamp(24px, 2vw, 39px);
+    .price.is-long {
+      font-size: clamp(18px, 1.24vw, 27px);
     }
 
     .empty-state,
@@ -886,12 +913,15 @@
 
       <div class="field-row">
         <div class="field">
-          <label for="pageSizeInput">1ページの商品数</label>
+          <label for="pageSizeInput">1画面の商品数</label>
           <select id="pageSizeInput">
             <option value="4">4商品</option>
             <option value="6">6商品</option>
             <option value="8">8商品</option>
             <option value="10">10商品</option>
+            <option value="12">12商品</option>
+            <option value="16">16商品</option>
+            <option value="20">20商品</option>
           </select>
         </div>
         <div class="field">
@@ -935,10 +965,13 @@
         cache: "tck-store-monitor-cache-v1"
       };
 
+      const CURRENT_SETTINGS_VERSION = 2;
+
       const DEFAULT_SETTINGS = {
+        version: CURRENT_SETTINGS_VERSION,
         endpoint: "",
         title: "トレカキングダム 店頭販売カード",
-        pageSize: 8,
+        pageSize: 20,
         slideSeconds: 12,
         refreshMinutes: 3
       };
@@ -1033,17 +1066,22 @@
       function loadSettings() {
         try {
           const parsed = JSON.parse(localStorage.getItem(STORAGE_KEYS.settings) || "{}");
-          return sanitizeSettings({ ...DEFAULT_SETTINGS, ...parsed });
+          const merged = { ...DEFAULT_SETTINGS, ...parsed };
+          if (Number(parsed.version || 0) < CURRENT_SETTINGS_VERSION) {
+            merged.pageSize = 20;
+          }
+          return sanitizeSettings(merged);
         } catch (_) {
           return { ...DEFAULT_SETTINGS };
         }
       }
 
       function sanitizeSettings(value) {
-        const pageSizes = [4, 6, 8, 10];
+        const pageSizes = [4, 6, 8, 10, 12, 16, 20];
         const slideSeconds = [5, 8, 12, 15, 20];
         const refreshMinutes = [1, 3, 5, 10];
         const normalized = {
+          version: CURRENT_SETTINGS_VERSION,
           endpoint: String(value.endpoint || "").trim(),
           title: String(value.title || DEFAULT_SETTINGS.title).trim().slice(0, 48) || DEFAULT_SETTINGS.title,
           pageSize: Number(value.pageSize),
@@ -1265,29 +1303,35 @@
       }
 
       function pageCount() {
-        return Math.ceil(state.products.length / state.settings.pageSize);
+        return Math.ceil(state.products.length / itemsPerPage());
       }
 
-      function layoutForPageSize(size) {
-        const landscape = innerWidth >= 900;
-        if (!landscape) return { columns: 2, rows: Math.ceil(size / 2) };
-        if (size === 4) return { columns: 4, rows: 1 };
-        if (size === 6) return { columns: 3, rows: 2 };
-        if (size === 10) return { columns: 5, rows: 2 };
-        return { columns: 4, rows: 2 };
+      function itemsPerPage() {
+        const configured = state.settings.pageSize;
+        if (innerWidth < 760) return Math.min(configured, 4);
+        if (innerWidth < 1180) return Math.min(configured, 8);
+        return configured;
+      }
+
+      function layoutForItemCount(count) {
+        if (innerWidth < 1180) {
+          return { columns: 1, rows: Math.max(1, count) };
+        }
+        return {
+          columns: 2,
+          rows: Math.max(1, Math.ceil(count / 2))
+        };
       }
 
       function render() {
         ui.siteTitle.textContent = state.settings.title;
         document.title = `${state.settings.title}｜店頭モニター`;
-        const layout = layoutForPageSize(state.settings.pageSize);
-        document.documentElement.style.setProperty("--columns", String(layout.columns));
-        document.documentElement.style.setProperty("--rows", String(layout.rows));
-
         showLoading(false);
         ui.grid.replaceChildren();
 
         if (!state.products.length) {
+          document.documentElement.style.setProperty("--columns", "2");
+          document.documentElement.style.setProperty("--rows", "10");
           showEmpty("現在表示できる商品がありません", "通常在庫または特価在庫が1以上の商品が登録されると自動で表示されます。");
           renderPagination();
           resetSlideClock();
@@ -1295,8 +1339,13 @@
         }
 
         hideEmpty();
-        const start = state.currentPage * state.settings.pageSize;
-        const visible = state.products.slice(start, start + state.settings.pageSize);
+        const perPage = itemsPerPage();
+        state.currentPage = Math.min(state.currentPage, Math.max(0, pageCount() - 1));
+        const start = state.currentPage * perPage;
+        const visible = state.products.slice(start, start + perPage);
+        const layout = layoutForItemCount(visible.length);
+        document.documentElement.style.setProperty("--columns", String(layout.columns));
+        document.documentElement.style.setProperty("--rows", String(layout.rows));
         const fragment = document.createDocumentFragment();
         visible.forEach((product, index) => fragment.appendChild(createCard(product, index)));
         ui.grid.appendChild(fragment);
@@ -1325,42 +1374,41 @@
         fallback.textContent = "NO IMAGE";
         imageWrap.append(image, fallback);
 
-        if (hasSpecial) {
-          const ribbon = document.createElement("div");
-          ribbon.className = "special-ribbon";
-          ribbon.textContent = "状態特価あり";
-          imageWrap.appendChild(ribbon);
-        }
-
         const name = document.createElement("h2");
         name.className = "card-name";
         name.textContent = product.name;
 
         const prices = document.createElement("div");
-        prices.className = `price-grid${hasNormal !== hasSpecial ? " is-single" : ""}`;
-        if (hasNormal) prices.appendChild(createPriceBox("通常価格", product.normalPrice, product.normalPriceText, product.normalStock, false));
-        if (hasSpecial) prices.appendChild(createPriceBox("状態特価", product.specialPrice, product.specialPriceText, product.specialStock, true));
+        prices.className = "price-grid";
+        prices.append(
+          createPriceBox("通常価格", product.normalPrice, product.normalPriceText, product.normalStock, false, hasNormal),
+          createPriceBox("状態特価", product.specialPrice, product.specialPriceText, product.specialStock, true, hasSpecial)
+        );
 
         card.append(imageWrap, name, prices);
         return card;
       }
 
-      function createPriceBox(labelText, value, displayText, stockCount, special) {
+      function createPriceBox(labelText, value, displayText, stockCount, special, available) {
         const box = document.createElement("div");
-        box.className = `price-box${special ? " special" : ""}`;
-        const top = document.createElement("div");
-        top.className = "price-top";
+        box.className = `price-box${special ? " special" : ""}${available ? "" : " is-unavailable"}`;
         const label = document.createElement("span");
         label.className = "price-label";
         label.textContent = labelText;
-        const stock = document.createElement("span");
+        const stock = document.createElement("div");
         stock.className = "stock";
-        stock.textContent = `在庫 ${formatStock(stockCount)}点`;
+        const stockLabel = document.createElement("span");
+        stockLabel.className = "stock-label";
+        stockLabel.textContent = "在庫";
+        const stockCountText = document.createElement("strong");
+        stockCountText.className = "stock-count";
+        stockCountText.textContent = `${formatStock(stockCount)}点`;
+        stock.append(stockLabel, stockCountText);
         const price = document.createElement("div");
         price.className = "price";
-        price.textContent = formatPrice(value, displayText);
-        top.append(label, stock);
-        box.append(top, price);
+        price.textContent = available ? formatPrice(value, displayText) : "—";
+        if (price.textContent.length >= 8) price.classList.add("is-long");
+        box.append(label, price, stock);
         return box;
       }
 
