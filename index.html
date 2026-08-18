@@ -1064,7 +1064,9 @@
       function validEndpoint(url) {
         try {
           const parsed = new URL(url);
-          return parsed.protocol === "https:" && parsed.hostname === "script.google.com" && /\/macros\/s\/[^/]+\/(exec|dev)\/?$/.test(parsed.pathname);
+          return parsed.protocol === "https:"
+            && parsed.hostname === "script.google.com"
+            && /^\/(?:macros|a\/macros\/[^/]+)\/s\/[^/]+\/(exec|dev)\/?$/.test(parsed.pathname);
         } catch (_) {
           return false;
         }
