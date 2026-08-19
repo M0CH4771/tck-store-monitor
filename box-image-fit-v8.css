@@ -1,0 +1,97 @@
+/* BOX画像は必ず全体を表示。トリミング・ズーム禁止。 */
+.image-wrap {
+  position: relative !important;
+  inset: auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  padding: 4px !important;
+  background: #fff !important;
+}
+
+.card-image {
+  position: static !important;
+  inset: auto !important;
+  display: block !important;
+  width: auto !important;
+  height: auto !important;
+  max-width: 98% !important;
+  max-height: 98% !important;
+  object-fit: contain !important;
+  object-position: center center !important;
+  transform: none !important;
+}
+
+/* 13商品以上は画像優先の高密度モードに自動切替 */
+.grid:has(.card:nth-child(13)) .visual {
+  min-height: 0 !important;
+}
+
+.grid:has(.card:nth-child(13)) .card-name {
+  margin: 0 4px 2px !important;
+  padding: 2px 5px !important;
+  font-size: calc(clamp(8px, .52vw, 10px) * var(--name-scale)) !important;
+  line-height: 1.05 !important;
+}
+
+.grid:has(.card:nth-child(13)) .price-area {
+  gap: 2px !important;
+  padding: 0 4px 3px !important;
+}
+
+.grid:has(.card:nth-child(13)) .price-box {
+  grid-template-columns: auto minmax(0, 1fr) auto !important;
+  grid-template-rows: 1fr !important;
+  min-height: 34px !important;
+  padding: 3px 5px 3px 6px !important;
+}
+
+.grid:has(.card:nth-child(13)) .price-label {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  align-self: center !important;
+  margin-right: 6px !important;
+  font-size: calc(clamp(8px, .52vw, 10px) * var(--label-scale)) !important;
+  line-height: 1 !important;
+}
+
+.grid:has(.card:nth-child(13)) .price {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  align-self: center !important;
+  font-size: calc(clamp(17px, 1.05vw, 23px) * var(--price-scale)) !important;
+  line-height: 1 !important;
+}
+
+.grid:has(.card:nth-child(13)) .price.is-long {
+  font-size: calc(clamp(15px, .93vw, 20px) * var(--price-scale)) !important;
+}
+
+.grid:has(.card:nth-child(13)) .stock {
+  grid-column: 3 !important;
+  grid-row: 1 !important;
+  align-self: center !important;
+  margin-left: 5px !important;
+  padding: 3px 5px !important;
+  font-size: calc(clamp(8px, .5vw, 10px) * var(--stock-scale)) !important;
+}
+
+.grid:has(.card:nth-child(13)) .stock.is-last-one {
+  font-size: calc(clamp(9px, .55vw, 11px) * var(--stock-scale)) !important;
+}
+
+.grid:has(.card:nth-child(13)) .card.is-single-price .price-box {
+  min-height: 42px !important;
+  padding-left: 7px !important;
+}
+
+.grid:has(.card:nth-child(13)) .card.is-single-price .price {
+  font-size: calc(clamp(20px, 1.25vw, 27px) * var(--price-scale)) !important;
+}
+
+.grid:has(.card:nth-child(13)) .card.is-single-price .price.is-long {
+  font-size: calc(clamp(18px, 1.08vw, 23px) * var(--price-scale)) !important;
+}
