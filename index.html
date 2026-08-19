@@ -904,9 +904,14 @@
     }
 
     .grid.is-name-hidden .card {
-      grid-template-columns:
-        minmax(105px, 38%)
-        minmax(0, 1fr);
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows:
+        minmax(0, 1fr)
+        clamp(72px, 8.2vh, 92px);
+    }
+
+    .grid.is-name-hidden {
+      grid-auto-flow: row;
     }
 
     .grid.is-name-hidden .card-name {
@@ -914,17 +919,60 @@
     }
 
     .grid.is-name-hidden .price-grid {
+      grid-column: 1;
+      grid-row: 2;
       display: grid;
       grid-template-rows: repeat(2, minmax(0, 1fr));
       min-width: 0;
       min-height: 0;
-      gap: 3px;
-      padding: 2px 2px 2px 0;
+      gap: 2px;
+      padding: 0 3px 3px;
     }
 
     .grid.is-name-hidden .price-box {
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      grid-template-rows: minmax(0, 1fr);
       min-height: 0;
       margin: 0;
+      padding: 2px 4px;
+      gap: 4px;
+      border-left-width: 4px;
+    }
+
+    .grid.is-name-hidden .image-wrap {
+      grid-column: 1;
+      grid-row: 1;
+      margin: 3px 3px 2px;
+      padding: 1px;
+    }
+
+    .grid.is-name-hidden .price-label {
+      grid-column: 1;
+      grid-row: 1;
+      padding: 2px 5px;
+      font-size: clamp(11px, .68vw, 14px);
+    }
+
+    .grid.is-name-hidden .price {
+      grid-column: 2;
+      grid-row: 1;
+      text-align: right;
+      font-size: clamp(21px, 1.35vw, 30px);
+    }
+
+    .grid.is-name-hidden .price.is-long {
+      font-size: clamp(19px, 1.18vw, 26px);
+    }
+
+    .grid.is-name-hidden .stock {
+      grid-column: 3;
+      grid-row: 1;
+      min-width: clamp(43px, 2.8vw, 58px);
+      padding: 2px 3px;
+    }
+
+    .grid.is-name-hidden .stock-count {
+      font-size: clamp(17px, 1.05vw, 23px);
     }
 
     .image-wrap {
@@ -1040,22 +1088,6 @@
 
     .price.is-long {
       font-size: clamp(19px, 1.3vw, 28px);
-    }
-
-    .grid.is-name-hidden .price {
-      font-size: clamp(26px, 1.82vw, 39px);
-    }
-
-    .grid.is-name-hidden .price.is-long {
-      font-size: clamp(22px, 1.55vw, 33px);
-    }
-
-    .grid.is-name-hidden .stock {
-      min-width: clamp(50px, 3.6vw, 68px);
-    }
-
-    .grid.is-name-hidden .stock-count {
-      font-size: clamp(20px, 1.45vw, 30px);
     }
 
     .state-panel {
@@ -1716,10 +1748,11 @@
         if (innerWidth < 1180) {
           return { columns: 1, rows: Math.max(1, count) };
         }
-        if (!state.settings.showProductName && count > 10) {
+        if (!state.settings.showProductName) {
+          const columns = Math.min(5, Math.max(1, count));
           return {
-            columns: 4,
-            rows: Math.max(1, Math.ceil(count / 4))
+            columns,
+            rows: Math.max(1, Math.ceil(count / columns))
           };
         }
         return {
