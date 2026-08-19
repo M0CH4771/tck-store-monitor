@@ -98,36 +98,9 @@
       gap: clamp(12px, 1.2vw, 22px);
     }
 
-    .brand-mark {
-      position: relative;
-      display: grid;
-      place-items: center;
-      width: clamp(52px, 4.2vw, 76px);
-      aspect-ratio: 1;
-      flex: none;
-      border: 2px solid rgba(255,255,255,.76);
-      border-radius: 18px 6px 18px 6px;
-      color: #fff;
-      background: linear-gradient(145deg, #ff3b43, #a70c15 66%);
-      box-shadow: 0 0 0 5px rgba(239,43,52,.12), 0 10px 26px rgba(0,0,0,.35);
-      font-size: clamp(18px, 1.65vw, 29px);
-      font-weight: 1000;
-      font-style: italic;
-      letter-spacing: -0.08em;
-      text-shadow: 0 2px 0 rgba(0,0,0,.5);
-    }
-
     .brand-copy {
       min-width: 0;
-    }
-
-    .eyebrow {
-      margin: 0 0 2px;
-      color: var(--red);
-      font-size: clamp(11px, .86vw, 16px);
-      font-weight: 900;
-      letter-spacing: .16em;
-      line-height: 1;
+      flex: 1;
     }
 
     h1 {
@@ -796,7 +769,7 @@
       --gold: #f2c200;
       --gold-deep: #b78f00;
       --green: #08783e;
-      --header-h: clamp(68px, 7.4vh, 80px);
+      --header-h: clamp(72px, 8vh, 88px);
       --footer-h: clamp(34px, 4.2vh, 44px);
       font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", "Yu Gothic", Meiryo, sans-serif;
     }
@@ -818,42 +791,24 @@
     }
 
     .header {
-      padding: 7px clamp(18px, 1.8vw, 34px);
+      gap: clamp(18px, 2vw, 36px);
+      padding: 7px clamp(20px, 2vw, 38px);
       border-bottom: 4px solid var(--red);
       background: #ffffff;
       box-shadow: 0 1px 0 rgba(25, 34, 43, .12);
     }
 
     .brand {
-      gap: clamp(10px, 1vw, 16px);
-    }
-
-    .brand-mark {
-      width: clamp(48px, 3.8vw, 62px);
-      border: 0;
-      border-radius: 9px;
-      background: var(--red);
-      box-shadow: 0 2px 5px rgba(80, 8, 22, .18);
-      font-size: clamp(17px, 1.45vw, 24px);
-      font-weight: 850;
-      font-style: normal;
-      letter-spacing: -.06em;
-      text-shadow: none;
-    }
-
-    .eyebrow {
-      margin-bottom: 2px;
-      color: var(--muted);
-      font-size: clamp(10px, .68vw, 12px);
-      font-weight: 700;
-      letter-spacing: .04em;
+      flex: 1;
+      gap: 0;
     }
 
     h1 {
       color: var(--text);
-      font-size: clamp(23px, 1.85vw, 33px);
-      font-weight: 850;
-      letter-spacing: -.015em;
+      font-size: clamp(34px, 2.75vw, 52px);
+      font-weight: 900;
+      letter-spacing: -.025em;
+      line-height: 1;
     }
 
     .status {
@@ -1238,8 +1193,6 @@
       :root { --columns: 2; --rows: 2; }
       .stage { padding-inline: 10px; }
       .header { padding-inline: 14px; }
-      .brand-mark { display: none; }
-      .eyebrow { display: none; }
       .clock { display: none; }
       .footer { grid-template-columns: 1fr auto; padding-inline: 14px; }
       .updated { display: none; }
@@ -1260,9 +1213,7 @@
   <main class="app" aria-live="polite">
     <header class="header">
       <div class="brand">
-        <div class="brand-mark" aria-hidden="true">TCK</div>
         <div class="brand-copy">
-          <p class="eyebrow">店頭在庫・販売価格</p>
           <h1 id="siteTitle">トレカキングダム 店頭販売カード</h1>
         </div>
       </div>
