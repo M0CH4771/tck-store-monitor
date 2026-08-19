@@ -1348,12 +1348,12 @@
 
       <div class="field-row">
         <div class="field">
-          <label for="pageSizeInput">1画面の商品数</label>
+          <label for="pageSizeInput">1画面の最大商品数</label>
           <select id="pageSizeInput">
-            <option value="5">5商品（1段）</option>
-            <option value="10">10商品（2段）</option>
-            <option value="15">15商品（3段）</option>
-            <option value="20">20商品（4段）</option>
+            <option value="6">6商品（1段）</option>
+            <option value="12">12商品（2段）</option>
+            <option value="18">18商品（3段）</option>
+            <option value="24">24商品（4段）</option>
           </select>
         </div>
         <div class="field">
@@ -1377,6 +1377,8 @@
         </div>
       </div>
 
+      <p class="hint">在庫対象の商品が設定数より少ない場合は、登録されている商品だけを表示します。</p>
+
       <p class="form-error" id="formError"></p>
 
       <div class="dialog-actions">
@@ -1397,15 +1399,15 @@
         cache: "tck-store-monitor-cache-v1"
       };
 
-      const CURRENT_SETTINGS_VERSION = 4;
-      const PAGE_SIZE_OPTIONS = [5, 10, 15, 20];
+      const CURRENT_SETTINGS_VERSION = 5;
+      const PAGE_SIZE_OPTIONS = [6, 12, 18, 24];
 
       const DEFAULT_SETTINGS = {
         version: CURRENT_SETTINGS_VERSION,
         endpoint: "",
         title: "トレカキングダム 店頭販売カード",
         showProductName: false,
-        pageSize: 20,
+        pageSize: 24,
         slideSeconds: 12,
         refreshMinutes: 3
       };
@@ -1430,7 +1432,11 @@
         ["メガブレイブ(1BOX)", 12000, 7, null, 0, "#ed5c35", "#294ca7"],
         ["メガシンフォニア(1BOX)", 11000, 8, 10000, 4, "#f86bae", "#6847b8"],
         ["ブラックボルト(1BOX)", 28000, 9, null, 0, "#494949", "#111111"],
-        ["拡張パックデラックス ホワイトフレア(1BOX)", 148000, 10, 128000, 3, "#f6f6f6", "#7b8295"]
+        ["拡張パックデラックス ホワイトフレア(1BOX)", 148000, 10, 128000, 3, "#f6f6f6", "#7b8295"],
+        ["ホワイトフレア(1BOX)", 26000, 10, 23000, 3, "#f3f4f5", "#aeb7c5"],
+        ["バトルパートナーズ(1BOX)", 12000, 0, 11000, 4, "#f0a64b", "#b13f3f"],
+        ["テラスタルフェスex(1BOX)", 24000, 0, 21000, 14, "#69c8d1", "#4e55ae"],
+        ["ナイトワンダラー(1BOX)", 15000, 0, 13000, 5, "#7453a6", "#26243f"]
       ].map((item, index) => ({
         row: index + 2,
         name: item[0],
@@ -1514,15 +1520,15 @@
           const merged = { ...DEFAULT_SETTINGS, ...parsed };
           const previousVersion = Number(parsed.version || 0);
           if (previousVersion < 2) {
-            merged.pageSize = 20;
+            merged.pageSize = 24;
           }
           if (previousVersion < 3) {
             merged.showProductName = false;
           }
-          if (previousVersion < 4) {
+          if (previousVersion >= 2 && previousVersion < 5) {
             const legacyPageSize = Number(merged.pageSize);
             merged.pageSize = Number.isFinite(legacyPageSize)
-              ? Math.min(20, Math.max(5, Math.ceil(legacyPageSize / 5) * 5))
+              ? Math.min(24, Math.max(6, Math.ceil(legacyPageSize / 6) * 6))
               : DEFAULT_SETTINGS.pageSize;
           }
           return sanitizeSettings(merged);
@@ -1773,7 +1779,7 @@
           return { columns: 1, rows: Math.max(1, count) };
         }
         if (!state.settings.showProductName) {
-          const columns = Math.min(5, Math.max(1, count));
+          const columns = Math.min(6, Math.max(1, count));
           return {
             columns,
             rows: Math.max(1, Math.ceil(count / columns))
