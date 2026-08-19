@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#07080d">
+  <meta name="theme-color" content="#ffffff">
   <title>トレカキングダム｜店頭販売カード</title>
   <style>
     :root {
@@ -782,9 +782,348 @@
       transform: translate(-50%, 0);
     }
 
+    /* 店頭モニター向け：装飾より視認性を優先 */
+    :root {
+      color-scheme: light;
+      --bg: #e9edf0;
+      --panel: #ffffff;
+      --panel-2: #f4f5f6;
+      --line: #24282d;
+      --text: #111317;
+      --muted: #4e555d;
+      --red: #e30613;
+      --red-deep: #b9000a;
+      --gold: #ffd51f;
+      --gold-deep: #e3aa00;
+      --green: #07893f;
+      --header-h: clamp(68px, 7.5vh, 82px);
+      --footer-h: clamp(34px, 4.2vh, 44px);
+    }
+
+    html,
+    body {
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    body {
+      background: #e9edf0;
+    }
+
+    body::before {
+      display: none;
+    }
+
+    .header {
+      padding: 8px clamp(16px, 1.8vw, 32px);
+      border-bottom: 5px solid var(--red);
+      background: #ffffff;
+      box-shadow: none;
+    }
+
+    .brand {
+      gap: clamp(10px, 1vw, 16px);
+    }
+
+    .brand-mark {
+      width: clamp(48px, 3.8vw, 62px);
+      border: 0;
+      border-radius: 7px;
+      background: var(--red);
+      box-shadow: none;
+      font-size: clamp(17px, 1.45vw, 24px);
+      font-style: normal;
+      letter-spacing: -.06em;
+      text-shadow: none;
+    }
+
+    .eyebrow {
+      margin-bottom: 1px;
+      color: #555b62;
+      font-size: clamp(10px, .7vw, 13px);
+      letter-spacing: .08em;
+    }
+
+    h1 {
+      color: #111317;
+      font-size: clamp(23px, 1.9vw, 34px);
+      letter-spacing: 0;
+    }
+
+    .status {
+      color: #3d434a;
+    }
+
+    .status-dot,
+    .status.is-live .status-dot,
+    .status.is-error .status-dot {
+      box-shadow: none;
+    }
+
+    .clock-time {
+      color: #111317;
+      font-size: clamp(24px, 1.85vw, 34px);
+    }
+
+    .clock-date {
+      margin-top: 3px;
+      color: #4e555d;
+    }
+
+    .stage {
+      padding: clamp(5px, .7vh, 8px) clamp(8px, .85vw, 16px);
+    }
+
+    .grid {
+      gap: clamp(3px, .42vh, 5px) clamp(6px, .65vw, 11px);
+    }
+
+    .card {
+      grid-template-columns:
+        clamp(92px, 6vw, 126px)
+        minmax(145px, 1fr)
+        minmax(170px, .78fr)
+        minmax(170px, .78fr);
+      border: 2px solid #24282d;
+      border-radius: 6px;
+      background: #ffffff;
+      box-shadow: none;
+    }
+
+    .card:nth-child(even) {
+      background: #f6f7f8;
+    }
+
+    .card::after {
+      display: none;
+    }
+
+    .card.has-special {
+      border-color: #24282d;
+      box-shadow: none;
+    }
+
+    .grid.is-name-hidden .card {
+      grid-template-columns:
+        clamp(118px, 8vw, 172px)
+        minmax(0, 1fr)
+        minmax(0, 1fr);
+    }
+
+    .grid.is-name-hidden .card-name {
+      display: none;
+    }
+
+    .image-wrap {
+      margin: 2px;
+      padding: 1px 4px;
+      border: 1px solid #c9ced3;
+      border-radius: 3px;
+      background: #ffffff;
+    }
+
+    .card-image {
+      filter: none;
+    }
+
+    .image-fallback {
+      border-color: #aeb4ba;
+      border-radius: 3px;
+      color: #5a6168;
+      background: #edf0f2;
+    }
+
+    .card-name {
+      color: #111317;
+      font-size: clamp(13px, .9vw, 18px);
+    }
+
+    .price-box {
+      gap: 0 6px;
+      margin: 2px 2px 2px 0;
+      padding: 3px 5px 3px 8px;
+      border: 2px solid #24282d;
+      border-left: 6px solid var(--red);
+      border-radius: 4px;
+      background: #ffffff;
+    }
+
+    .price-box.special {
+      border-color: #24282d;
+      border-left: 6px solid #24282d;
+      background: #ffd82f;
+    }
+
+    .price-box.is-unavailable {
+      border-color: #8d949b;
+      border-left-color: #8d949b;
+      opacity: .42;
+      background: #e5e8eb;
+    }
+
+    .price-label,
+    .special .price-label {
+      color: #252a30;
+      font-size: clamp(9px, .62vw, 12px);
+      letter-spacing: 0;
+    }
+
+    .stock {
+      min-width: clamp(45px, 3.1vw, 60px);
+      padding: 2px 4px;
+      border-radius: 3px;
+      color: #ffffff;
+      background: var(--red);
+      box-shadow: none;
+    }
+
+    .special .stock {
+      color: #ffffff;
+      background: #191c20;
+    }
+
+    .is-unavailable .stock {
+      color: #ffffff;
+      background: #666d74;
+    }
+
+    .stock-label {
+      font-size: clamp(8px, .52vw, 10px);
+      letter-spacing: 0;
+    }
+
+    .stock-count {
+      font-size: clamp(18px, 1.25vw, 26px);
+    }
+
+    .price,
+    .special .price {
+      color: #111317;
+      font-size: clamp(22px, 1.52vw, 32px);
+      letter-spacing: -.04em;
+      text-shadow: none;
+    }
+
+    .price.is-long {
+      font-size: clamp(19px, 1.3vw, 28px);
+    }
+
+    .grid.is-name-hidden .price {
+      font-size: clamp(26px, 1.82vw, 39px);
+    }
+
+    .grid.is-name-hidden .price.is-long {
+      font-size: clamp(22px, 1.55vw, 33px);
+    }
+
+    .grid.is-name-hidden .stock {
+      min-width: clamp(50px, 3.6vw, 68px);
+    }
+
+    .grid.is-name-hidden .stock-count {
+      font-size: clamp(20px, 1.45vw, 30px);
+    }
+
+    .state-panel {
+      border: 2px solid #24282d;
+      border-radius: 8px;
+      color: #111317;
+      background: #ffffff;
+      box-shadow: none;
+    }
+
+    .state-copy {
+      color: #4e555d;
+    }
+
+    .footer {
+      border-top: 2px solid #24282d;
+      color: #30363c;
+      background: #ffffff;
+    }
+
+    .page-info {
+      color: #111317;
+    }
+
+    .dot {
+      background: #90969c;
+    }
+
+    .dot.is-current {
+      background: var(--red);
+    }
+
+    .progress {
+      top: -3px;
+      height: 3px;
+      background: var(--red);
+      box-shadow: none;
+    }
+
+    .nav-button,
+    .control-button {
+      border: 1px solid #111317;
+      border-radius: 5px;
+      color: #ffffff;
+      background: rgba(17,19,23,.9);
+      box-shadow: none;
+    }
+
+    dialog {
+      border: 2px solid #24282d;
+      border-radius: 10px;
+      color: #111317;
+      background: #ffffff;
+      box-shadow: 0 18px 50px rgba(0,0,0,.28);
+    }
+
+    dialog::backdrop {
+      background: rgba(0,0,0,.62);
+      backdrop-filter: none;
+    }
+
+    .dialog-head {
+      border-bottom-color: #c7ccd1;
+    }
+
+    .dialog-head p,
+    .hint {
+      color: #555c63;
+    }
+
+    label {
+      color: #111317;
+    }
+
+    input,
+    select {
+      border-color: #8d949b;
+      color: #111317;
+      background: #ffffff;
+    }
+
+    .dialog-button {
+      border-color: #6f767d;
+      color: #111317;
+      background: #eceff1;
+    }
+
+    .dialog-button.primary {
+      border-color: var(--red);
+      color: #ffffff;
+      background: var(--red);
+      box-shadow: none;
+    }
+
+    .toast {
+      border-radius: 5px;
+      box-shadow: none;
+    }
+
     @keyframes card-in {
-      from { opacity: 0; transform: translateY(12px) scale(.985); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     @keyframes spin {
@@ -836,7 +1175,7 @@
       <div class="brand">
         <div class="brand-mark" aria-hidden="true">TCK</div>
         <div class="brand-copy">
-          <p class="eyebrow">STORE INVENTORY</p>
+          <p class="eyebrow">店頭在庫・販売価格</p>
           <h1 id="siteTitle">トレカキングダム 店頭販売カード</h1>
         </div>
       </div>
@@ -911,6 +1250,15 @@
         <input id="titleInput" type="text" maxlength="48" placeholder="トレカキングダム 店頭販売カード">
       </div>
 
+      <div class="field">
+        <label for="nameVisibilityInput">商品名の表示</label>
+        <select id="nameVisibilityInput">
+          <option value="false">非表示（画像・価格を大きく）</option>
+          <option value="true">表示する</option>
+        </select>
+        <p class="hint">非表示にすると、画像・通常価格・状態特価・在庫を自動で拡大します。</p>
+      </div>
+
       <div class="field-row">
         <div class="field">
           <label for="pageSizeInput">1画面の商品数</label>
@@ -965,12 +1313,13 @@
         cache: "tck-store-monitor-cache-v1"
       };
 
-      const CURRENT_SETTINGS_VERSION = 2;
+      const CURRENT_SETTINGS_VERSION = 3;
 
       const DEFAULT_SETTINGS = {
         version: CURRENT_SETTINGS_VERSION,
         endpoint: "",
         title: "トレカキングダム 店頭販売カード",
+        showProductName: false,
         pageSize: 20,
         slideSeconds: 12,
         refreshMinutes: 3
@@ -1049,6 +1398,7 @@
         settingsForm: document.getElementById("settingsForm"),
         endpointInput: document.getElementById("endpointInput"),
         titleInput: document.getElementById("titleInput"),
+        nameVisibilityInput: document.getElementById("nameVisibilityInput"),
         pageSizeInput: document.getElementById("pageSizeInput"),
         slideSecondsInput: document.getElementById("slideSecondsInput"),
         refreshMinutesInput: document.getElementById("refreshMinutesInput"),
@@ -1077,8 +1427,12 @@
         try {
           const parsed = JSON.parse(localStorage.getItem(STORAGE_KEYS.settings) || "{}");
           const merged = { ...DEFAULT_SETTINGS, ...parsed };
-          if (Number(parsed.version || 0) < CURRENT_SETTINGS_VERSION) {
+          const previousVersion = Number(parsed.version || 0);
+          if (previousVersion < 2) {
             merged.pageSize = 20;
+          }
+          if (previousVersion < 3) {
+            merged.showProductName = false;
           }
           return sanitizeSettings(merged);
         } catch (_) {
@@ -1094,6 +1448,7 @@
           version: CURRENT_SETTINGS_VERSION,
           endpoint: String(value.endpoint || "").trim(),
           title: String(value.title || DEFAULT_SETTINGS.title).trim().slice(0, 48) || DEFAULT_SETTINGS.title,
+          showProductName: value.showProductName === true || String(value.showProductName).toLowerCase() === "true",
           pageSize: Number(value.pageSize),
           slideSeconds: Number(value.slideSeconds),
           refreshMinutes: Number(value.refreshMinutes)
@@ -1336,6 +1691,7 @@
       function render() {
         ui.siteTitle.textContent = state.settings.title;
         document.title = `${state.settings.title}｜店頭モニター`;
+        ui.grid.classList.toggle("is-name-hidden", !state.settings.showProductName);
         showLoading(false);
         ui.grid.replaceChildren();
 
@@ -1547,6 +1903,7 @@
       function openSettings(required = false) {
         ui.endpointInput.value = state.settings.endpoint;
         ui.titleInput.value = state.settings.title;
+        ui.nameVisibilityInput.value = String(state.settings.showProductName);
         ui.pageSizeInput.value = String(state.settings.pageSize);
         ui.slideSecondsInput.value = String(state.settings.slideSeconds);
         ui.refreshMinutesInput.value = String(state.settings.refreshMinutes);
@@ -1573,6 +1930,7 @@
         saveSettings({
           endpoint,
           title: ui.titleInput.value,
+          showProductName: ui.nameVisibilityInput.value === "true",
           pageSize: ui.pageSizeInput.value,
           slideSeconds: ui.slideSecondsInput.value,
           refreshMinutes: ui.refreshMinutesInput.value
