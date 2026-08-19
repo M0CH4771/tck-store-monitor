@@ -1,0 +1,26 @@
+/* BOX画像は必ず全体を表示。トリミング・ズーム禁止。 */
+.image-wrap {
+  position: relative !important;
+  inset: auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  padding: 8px !important;
+  background: #fff !important;
+}
+
+.card-image {
+  position: static !important;
+  inset: auto !important;
+  display: block !important;
+  width: auto !important;
+  height: auto !important;
+  max-width: 90% !important;
+  max-height: 90% !important;
+  object-fit: contain !important;
+  object-position: center center !important;
+  transform: none !important;
+}
