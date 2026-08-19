@@ -905,13 +905,26 @@
 
     .grid.is-name-hidden .card {
       grid-template-columns:
-        clamp(118px, 8vw, 172px)
-        minmax(0, 1fr)
+        minmax(105px, 38%)
         minmax(0, 1fr);
     }
 
     .grid.is-name-hidden .card-name {
       display: none;
+    }
+
+    .grid.is-name-hidden .price-grid {
+      display: grid;
+      grid-template-rows: repeat(2, minmax(0, 1fr));
+      min-width: 0;
+      min-height: 0;
+      gap: 3px;
+      padding: 2px 2px 2px 0;
+    }
+
+    .grid.is-name-hidden .price-box {
+      min-height: 0;
+      margin: 0;
     }
 
     .image-wrap {
@@ -923,6 +936,12 @@
     }
 
     .card-image {
+      position: absolute;
+      inset: 2px;
+      width: calc(100% - 4px);
+      height: calc(100% - 4px);
+      max-width: none;
+      max-height: none;
       filter: none;
     }
 
@@ -963,9 +982,20 @@
 
     .price-label,
     .special .price-label {
-      color: #252a30;
-      font-size: clamp(9px, .62vw, 12px);
+      width: max-content;
+      padding: 2px 6px;
+      border-radius: 2px;
+      color: #ffffff;
+      background: var(--red);
+      font-size: clamp(11px, .72vw, 14px);
+      font-weight: 1000;
+      line-height: 1.05;
       letter-spacing: 0;
+    }
+
+    .special .price-label {
+      color: #ffd82f;
+      background: #191c20;
     }
 
     .stock {
@@ -1681,6 +1711,12 @@
       function layoutForItemCount(count) {
         if (innerWidth < 1180) {
           return { columns: 1, rows: Math.max(1, count) };
+        }
+        if (!state.settings.showProductName && count > 10) {
+          return {
+            columns: 4,
+            rows: Math.max(1, Math.ceil(count / 4))
+          };
         }
         return {
           columns: 2,
