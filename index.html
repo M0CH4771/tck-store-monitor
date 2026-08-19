@@ -771,6 +771,17 @@
       --green: #08783e;
       --header-h: clamp(72px, 8vh, 88px);
       --footer-h: clamp(34px, 4.2vh, 44px);
+      --title-font-size: clamp(34px, 2.75vw, 52px);
+      --name-font-size: clamp(13px, .9vw, 18px);
+      --price-font-size: clamp(22px, 1.52vw, 32px);
+      --price-long-font-size: clamp(19px, 1.3vw, 28px);
+      --stock-font-size: clamp(18px, 1.25vw, 26px);
+      --stock-label-font-size: clamp(8px, .52vw, 10px);
+      --label-font-size: clamp(12px, .74vw, 15px);
+      --image-column-width: clamp(92px, 6vw, 126px);
+      --image-fr: 1.15fr;
+      --info-fr: .85fr;
+      --info-min-height: 69px;
       font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", "Yu Gothic", Meiryo, sans-serif;
     }
 
@@ -805,7 +816,7 @@
 
     h1 {
       color: var(--text);
-      font-size: clamp(34px, 2.75vw, 52px);
+      font-size: var(--title-font-size);
       font-weight: 900;
       letter-spacing: -.025em;
       line-height: 1;
@@ -845,7 +856,7 @@
 
     .card {
       grid-template-columns:
-        clamp(92px, 6vw, 126px)
+        var(--image-column-width)
         minmax(145px, 1fr)
         minmax(170px, .78fr)
         minmax(170px, .78fr);
@@ -875,8 +886,8 @@
     .grid.is-name-hidden .card {
       grid-template-columns: minmax(0, 1fr);
       grid-template-rows:
-        minmax(0, 1fr)
-        clamp(76px, 8.6vh, 96px);
+        minmax(0, var(--image-fr))
+        minmax(var(--info-min-height), var(--info-fr));
     }
 
     .grid.is-name-hidden {
@@ -919,7 +930,7 @@
       grid-column: 1;
       grid-row: 1;
       padding: 0;
-      font-size: clamp(12px, .7vw, 14px);
+      font-size: var(--label-font-size);
       line-height: 1.18;
       letter-spacing: 0;
     }
@@ -928,13 +939,13 @@
       grid-column: 2;
       grid-row: 1;
       text-align: right;
-      font-size: clamp(22px, 1.4vw, 31px);
+      font-size: var(--price-font-size);
       line-height: 1.16;
       letter-spacing: -.025em;
     }
 
     .grid.is-name-hidden .price.is-long {
-      font-size: clamp(19px, 1.2vw, 27px);
+      font-size: var(--price-long-font-size);
     }
 
     .grid.is-name-hidden .stock {
@@ -945,7 +956,7 @@
     }
 
     .grid.is-name-hidden .stock-count {
-      font-size: clamp(17px, 1.02vw, 23px);
+      font-size: var(--stock-font-size);
     }
 
     .image-wrap {
@@ -975,7 +986,7 @@
 
     .card-name {
       color: var(--text);
-      font-size: clamp(13px, .9vw, 18px);
+      font-size: var(--name-font-size);
       font-weight: 800;
     }
 
@@ -1009,7 +1020,7 @@
       border-radius: 0;
       color: #a70e27;
       background: transparent;
-      font-size: clamp(12px, .74vw, 15px);
+      font-size: var(--label-font-size);
       font-weight: 850;
       line-height: 1;
       letter-spacing: 0;
@@ -1044,26 +1055,26 @@
     }
 
     .stock-label {
-      font-size: clamp(8px, .52vw, 10px);
+      font-size: var(--stock-label-font-size);
       font-weight: 750;
       letter-spacing: 0;
     }
 
     .stock-count {
-      font-size: clamp(18px, 1.25vw, 26px);
+      font-size: var(--stock-font-size);
     }
 
     .price,
     .special .price {
       color: var(--text);
-      font-size: clamp(22px, 1.52vw, 32px);
+      font-size: var(--price-font-size);
       font-weight: 900;
       letter-spacing: -.025em;
       text-shadow: none;
     }
 
     .price.is-long {
-      font-size: clamp(19px, 1.3vw, 28px);
+      font-size: var(--price-long-font-size);
     }
 
     .state-panel {
@@ -1158,6 +1169,97 @@
       box-shadow: none;
     }
 
+    .display-controls {
+      display: grid;
+      gap: 15px;
+      padding: 16px;
+      border: 1px solid #b8c0c8;
+      border-radius: 12px;
+      background: #f5f7f9;
+    }
+
+    .display-controls-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .display-controls-title {
+      margin: 0 0 3px;
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 900;
+    }
+
+    .display-controls-copy {
+      margin: 0;
+      color: #555c63;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+
+    .reset-display-button {
+      min-height: 34px;
+      flex: none;
+      border: 1px solid #727c86;
+      border-radius: 8px;
+      padding: 6px 11px;
+      color: var(--text);
+      background: #ffffff;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 850;
+    }
+
+    .range-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 13px 18px;
+    }
+
+    .range-field {
+      display: grid;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .range-field-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    .range-field output {
+      min-width: 44px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      color: #ffffff;
+      background: var(--red);
+      text-align: center;
+      font-size: 11px;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.4;
+    }
+
+    .range-field input[type="range"] {
+      width: 100%;
+      min-height: 22px;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      outline: 0;
+      accent-color: var(--red);
+      background: transparent;
+      box-shadow: none;
+      cursor: pointer;
+    }
+
     .toast {
       border-radius: 8px;
       box-shadow: 0 6px 20px rgba(0, 0, 0, .18);
@@ -1194,6 +1296,8 @@
       .stage { padding-inline: 10px; }
       .header { padding-inline: 14px; }
       .clock { display: none; }
+      .display-controls-head { align-items: flex-start; }
+      .range-grid { grid-template-columns: 1fr; }
       .footer { grid-template-columns: 1fr auto; padding-inline: 14px; }
       .updated { display: none; }
       .footer-note { font-size: 9px; }
@@ -1297,6 +1401,50 @@
         <p class="hint">非表示にすると、画像・通常価格・状態特価・在庫を自動で拡大します。</p>
       </div>
 
+      <section class="display-controls" aria-labelledby="displayControlsTitle">
+        <div class="display-controls-head">
+          <div>
+            <h3 class="display-controls-title" id="displayControlsTitle">表示サイズ調整</h3>
+            <p class="display-controls-copy">動かすと画面へすぐ反映されます。モニターを見ながら調整してください。</p>
+          </div>
+          <button class="reset-display-button" id="resetDisplayButton" type="button">標準に戻す</button>
+        </div>
+
+        <div class="range-grid">
+          <label class="range-field" for="titleScaleInput">
+            <span class="range-field-head"><span>画面タイトル</span><output id="titleScaleOutput" for="titleScaleInput">100%</output></span>
+            <input id="titleScaleInput" type="range" min="60" max="180" step="5" value="100">
+          </label>
+
+          <label class="range-field" for="imageScaleInput">
+            <span class="range-field-head"><span>商品画像</span><output id="imageScaleOutput" for="imageScaleInput">100%</output></span>
+            <input id="imageScaleInput" type="range" min="60" max="140" step="5" value="100">
+          </label>
+
+          <label class="range-field" for="priceScaleInput">
+            <span class="range-field-head"><span>通常価格・状態特価</span><output id="priceScaleOutput" for="priceScaleInput">100%</output></span>
+            <input id="priceScaleInput" type="range" min="70" max="160" step="5" value="100">
+          </label>
+
+          <label class="range-field" for="stockScaleInput">
+            <span class="range-field-head"><span>在庫数</span><output id="stockScaleOutput" for="stockScaleInput">100%</output></span>
+            <input id="stockScaleInput" type="range" min="70" max="160" step="5" value="100">
+          </label>
+
+          <label class="range-field" for="labelScaleInput">
+            <span class="range-field-head"><span>価格の見出し</span><output id="labelScaleOutput" for="labelScaleInput">100%</output></span>
+            <input id="labelScaleInput" type="range" min="70" max="150" step="5" value="100">
+          </label>
+
+          <label class="range-field" for="nameScaleInput">
+            <span class="range-field-head"><span>商品名</span><output id="nameScaleOutput" for="nameScaleInput">100%</output></span>
+            <input id="nameScaleInput" type="range" min="70" max="170" step="5" value="100">
+          </label>
+        </div>
+
+        <p class="display-controls-copy">倍率を大きくしすぎると、24商品表示では文字が詰まる場合があります。</p>
+      </section>
+
       <div class="field-row">
         <div class="field">
           <label for="pageSizeInput">1画面の最大商品数</label>
@@ -1350,14 +1498,29 @@
         cache: "tck-store-monitor-cache-v1"
       };
 
-      const CURRENT_SETTINGS_VERSION = 5;
+      const CURRENT_SETTINGS_VERSION = 6;
       const PAGE_SIZE_OPTIONS = [6, 12, 18, 24];
+      const DISPLAY_SCALE_LIMITS = {
+        titleScale: [60, 180],
+        imageScale: [60, 140],
+        priceScale: [70, 160],
+        stockScale: [70, 160],
+        labelScale: [70, 150],
+        nameScale: [70, 170]
+      };
+      const DISPLAY_SCALE_KEYS = Object.keys(DISPLAY_SCALE_LIMITS);
 
       const DEFAULT_SETTINGS = {
         version: CURRENT_SETTINGS_VERSION,
         endpoint: "",
         title: "トレカキングダム 店頭販売カード",
         showProductName: false,
+        titleScale: 100,
+        imageScale: 100,
+        priceScale: 100,
+        stockScale: 100,
+        labelScale: 100,
+        nameScale: 100,
         pageSize: 24,
         slideSeconds: 12,
         refreshMinutes: 3
@@ -1441,6 +1604,19 @@
         endpointInput: document.getElementById("endpointInput"),
         titleInput: document.getElementById("titleInput"),
         nameVisibilityInput: document.getElementById("nameVisibilityInput"),
+        titleScaleInput: document.getElementById("titleScaleInput"),
+        titleScaleOutput: document.getElementById("titleScaleOutput"),
+        imageScaleInput: document.getElementById("imageScaleInput"),
+        imageScaleOutput: document.getElementById("imageScaleOutput"),
+        priceScaleInput: document.getElementById("priceScaleInput"),
+        priceScaleOutput: document.getElementById("priceScaleOutput"),
+        stockScaleInput: document.getElementById("stockScaleInput"),
+        stockScaleOutput: document.getElementById("stockScaleOutput"),
+        labelScaleInput: document.getElementById("labelScaleInput"),
+        labelScaleOutput: document.getElementById("labelScaleOutput"),
+        nameScaleInput: document.getElementById("nameScaleInput"),
+        nameScaleOutput: document.getElementById("nameScaleOutput"),
+        resetDisplayButton: document.getElementById("resetDisplayButton"),
         pageSizeInput: document.getElementById("pageSizeInput"),
         slideSecondsInput: document.getElementById("slideSecondsInput"),
         refreshMinutesInput: document.getElementById("refreshMinutesInput"),
@@ -1450,6 +1626,12 @@
         clockTime: document.getElementById("clockTime"),
         clockDate: document.getElementById("clockDate")
       };
+
+      const DISPLAY_CONTROLS = DISPLAY_SCALE_KEYS.map(key => ({
+        key,
+        input: ui[`${key}Input`],
+        output: ui[`${key}Output`]
+      }));
 
       function makeDemoImage(name, colorA, colorB) {
         const safe = name.replace(/[&<>"']/g, "");
@@ -1496,6 +1678,12 @@
           endpoint: String(value.endpoint || "").trim(),
           title: String(value.title || DEFAULT_SETTINGS.title).trim().slice(0, 48) || DEFAULT_SETTINGS.title,
           showProductName: value.showProductName === true || String(value.showProductName).toLowerCase() === "true",
+          titleScale: sanitizeScale(value.titleScale, "titleScale"),
+          imageScale: sanitizeScale(value.imageScale, "imageScale"),
+          priceScale: sanitizeScale(value.priceScale, "priceScale"),
+          stockScale: sanitizeScale(value.stockScale, "stockScale"),
+          labelScale: sanitizeScale(value.labelScale, "labelScale"),
+          nameScale: sanitizeScale(value.nameScale, "nameScale"),
           pageSize: Number(value.pageSize),
           slideSeconds: Number(value.slideSeconds),
           refreshMinutes: Number(value.refreshMinutes)
@@ -1506,9 +1694,80 @@
         return normalized;
       }
 
+      function sanitizeScale(value, key) {
+        const [minimum, maximum] = DISPLAY_SCALE_LIMITS[key];
+        const numeric = Number(value);
+        if (!Number.isFinite(numeric)) return DEFAULT_SETTINGS[key];
+        return Math.min(maximum, Math.max(minimum, Math.round(numeric / 5) * 5));
+      }
+
       function saveSettings(settings) {
         state.settings = sanitizeSettings(settings);
         localStorage.setItem(STORAGE_KEYS.settings, JSON.stringify(state.settings));
+      }
+
+      function clampValue(value, minimum, maximum) {
+        return Math.min(maximum, Math.max(minimum, value));
+      }
+
+      function applyDisplaySettings(settings = state.settings) {
+        const normalized = sanitizeSettings(settings);
+        const width = Math.max(320, window.innerWidth);
+        const height = Math.max(480, window.innerHeight);
+        const scale = key => normalized[key] / 100;
+        const rootStyle = document.documentElement.style;
+
+        const titleSize = clampValue(width * .0275, 34, 52) * scale("titleScale");
+        const nameSize = clampValue(width * .009, 13, 18) * scale("nameScale");
+        const priceSize = clampValue(width * .0152, 22, 32) * scale("priceScale");
+        const stockSize = clampValue(width * .0125, 18, 26) * scale("stockScale");
+        const stockLabelSize = clampValue(width * .0052, 8, 10) * scale("stockScale");
+        const labelSize = clampValue(width * .0074, 12, 15) * scale("labelScale");
+        const imageColumn = clampValue(width * .06, 92, 126) * scale("imageScale");
+        const imageFr = 1.15 + (normalized.imageScale - 100) * .01;
+        const infoFr = Math.max(.45, 2 - imageFr);
+        const infoRowMinimum = Math.max(
+          priceSize * 1.13,
+          stockSize + stockLabelSize + 4,
+          labelSize * 1.15
+        );
+        const infoMinimum = Math.ceil(infoRowMinimum * 2 + 7);
+        const baseHeaderHeight = clampValue(height * .08, 72, 88);
+        const headerHeight = Math.max(baseHeaderHeight, titleSize + 22);
+
+        rootStyle.setProperty("--title-font-size", `${titleSize.toFixed(2)}px`);
+        rootStyle.setProperty("--name-font-size", `${nameSize.toFixed(2)}px`);
+        rootStyle.setProperty("--price-font-size", `${priceSize.toFixed(2)}px`);
+        rootStyle.setProperty("--price-long-font-size", `${(priceSize * .875).toFixed(2)}px`);
+        rootStyle.setProperty("--stock-font-size", `${stockSize.toFixed(2)}px`);
+        rootStyle.setProperty("--stock-label-font-size", `${stockLabelSize.toFixed(2)}px`);
+        rootStyle.setProperty("--label-font-size", `${labelSize.toFixed(2)}px`);
+        rootStyle.setProperty("--image-column-width", `${imageColumn.toFixed(2)}px`);
+        rootStyle.setProperty("--image-fr", `${imageFr.toFixed(2)}fr`);
+        rootStyle.setProperty("--info-fr", `${infoFr.toFixed(2)}fr`);
+        rootStyle.setProperty("--info-min-height", `${infoMinimum}px`);
+        rootStyle.setProperty("--header-h", `${headerHeight.toFixed(2)}px`);
+      }
+
+      function setDisplayControlValues(settings) {
+        DISPLAY_CONTROLS.forEach(({ key, input, output }) => {
+          const value = sanitizeScale(settings[key], key);
+          input.value = String(value);
+          output.textContent = `${value}%`;
+        });
+      }
+
+      function readDisplayControlValues() {
+        return Object.fromEntries(
+          DISPLAY_CONTROLS.map(({ key, input }) => [key, sanitizeScale(input.value, key)])
+        );
+      }
+
+      function previewDisplayControls() {
+        DISPLAY_CONTROLS.forEach(({ input, output }) => {
+          output.textContent = `${input.value}%`;
+        });
+        applyDisplaySettings({ ...state.settings, ...readDisplayControlValues() });
       }
 
       function validEndpoint(url) {
@@ -1743,6 +2002,7 @@
       }
 
       function render() {
+        applyDisplaySettings(state.settings);
         ui.siteTitle.textContent = state.settings.title;
         document.title = `${state.settings.title}｜店頭モニター`;
         ui.grid.classList.toggle("is-name-hidden", !state.settings.showProductName);
@@ -1958,6 +2218,7 @@
         ui.endpointInput.value = state.settings.endpoint;
         ui.titleInput.value = state.settings.title;
         ui.nameVisibilityInput.value = String(state.settings.showProductName);
+        setDisplayControlValues(state.settings);
         ui.pageSizeInput.value = String(state.settings.pageSize);
         ui.slideSecondsInput.value = String(state.settings.slideSeconds);
         ui.refreshMinutesInput.value = String(state.settings.refreshMinutes);
@@ -1985,6 +2246,7 @@
           endpoint,
           title: ui.titleInput.value,
           showProductName: ui.nameVisibilityInput.value === "true",
+          ...readDisplayControlValues(),
           pageSize: ui.pageSizeInput.value,
           slideSeconds: ui.slideSecondsInput.value,
           refreshMinutes: ui.refreshMinutesInput.value
@@ -2028,6 +2290,12 @@
         ui.settingsButton.addEventListener("click", () => openSettings(false));
         ui.settingsForm.addEventListener("submit", submitSettings);
         ui.cancelSettingsButton.addEventListener("click", closeSettings);
+        DISPLAY_CONTROLS.forEach(({ input }) => input.addEventListener("input", previewDisplayControls));
+        ui.resetDisplayButton.addEventListener("click", () => {
+          setDisplayControlValues(DEFAULT_SETTINGS);
+          previewDisplayControls();
+        });
+        ui.settingsDialog.addEventListener("close", () => applyDisplaySettings(state.settings));
         document.addEventListener("mousemove", showPointerControls, { passive: true });
         document.addEventListener("touchstart", showPointerControls, { passive: true });
         window.addEventListener("resize", render);
@@ -2052,6 +2320,7 @@
       function initialize() {
         readApiFromQuery();
         bindEvents();
+        applyDisplaySettings(state.settings);
         updateClock();
         window.setInterval(updateClock, 1000);
         ui.siteTitle.textContent = state.settings.title;
