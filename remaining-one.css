@@ -1,0 +1,9 @@
+/* 在庫1点だけを強調。レイアウト寸法は変更しない。 */
+.stock.is-last-one {
+  border-color: #c8102e !important;
+  color: #ffffff !important;
+  background: #c8102e !important;
+  box-shadow: none !important;
+  font-weight: 900 !important;
+  white-space: nowrap !important;
+}
