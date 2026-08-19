@@ -1350,13 +1350,10 @@
         <div class="field">
           <label for="pageSizeInput">1画面の商品数</label>
           <select id="pageSizeInput">
-            <option value="4">4商品</option>
-            <option value="6">6商品</option>
-            <option value="8">8商品</option>
-            <option value="10">10商品</option>
-            <option value="12">12商品</option>
-            <option value="16">16商品</option>
-            <option value="20">20商品</option>
+            <option value="5">5商品（1段）</option>
+            <option value="10">10商品（2段）</option>
+            <option value="15">15商品（3段）</option>
+            <option value="20">20商品（4段）</option>
           </select>
         </div>
         <div class="field">
@@ -1400,7 +1397,8 @@
         cache: "tck-store-monitor-cache-v1"
       };
 
-      const CURRENT_SETTINGS_VERSION = 3;
+      const CURRENT_SETTINGS_VERSION = 4;
+      const PAGE_SIZE_OPTIONS = [5, 10, 15, 20];
 
       const DEFAULT_SETTINGS = {
         version: CURRENT_SETTINGS_VERSION,
@@ -1521,6 +1519,12 @@
           if (previousVersion < 3) {
             merged.showProductName = false;
           }
+          if (previousVersion < 4) {
+            const legacyPageSize = Number(merged.pageSize);
+            merged.pageSize = Number.isFinite(legacyPageSize)
+              ? Math.min(20, Math.max(5, Math.ceil(legacyPageSize / 5) * 5))
+              : DEFAULT_SETTINGS.pageSize;
+          }
           return sanitizeSettings(merged);
         } catch (_) {
           return { ...DEFAULT_SETTINGS };
@@ -1528,7 +1532,6 @@
       }
 
       function sanitizeSettings(value) {
-        const pageSizes = [4, 6, 8, 10, 12, 16, 20];
         const slideSeconds = [5, 8, 12, 15, 20];
         const refreshMinutes = [1, 3, 5, 10];
         const normalized = {
@@ -1540,7 +1543,7 @@
           slideSeconds: Number(value.slideSeconds),
           refreshMinutes: Number(value.refreshMinutes)
         };
-        if (!pageSizes.includes(normalized.pageSize)) normalized.pageSize = DEFAULT_SETTINGS.pageSize;
+        if (!PAGE_SIZE_OPTIONS.includes(normalized.pageSize)) normalized.pageSize = DEFAULT_SETTINGS.pageSize;
         if (!slideSeconds.includes(normalized.slideSeconds)) normalized.slideSeconds = DEFAULT_SETTINGS.slideSeconds;
         if (!refreshMinutes.includes(normalized.refreshMinutes)) normalized.refreshMinutes = DEFAULT_SETTINGS.refreshMinutes;
         return normalized;
