@@ -1,70 +1,90 @@
-/* 商品名を画像へ重ねず、画像の下へ独立表示するための上書き */
+/* 商品画像を最優先：商品名は画像外の独立した情報行にする */
 .visual {
-  display: grid;
-  grid-template-rows: minmax(0, 1fr);
-  min-height: 0;
-  overflow: hidden;
-  background: #f8fafb;
+  display: grid !important;
+  grid-template-rows: minmax(0, 1fr) !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  background: #fff !important;
 }
 
 .grid.name-compact .visual,
 .grid.name-full .visual {
-  grid-template-rows: minmax(0, 1fr) auto;
+  grid-template-rows: minmax(0, 1fr) auto !important;
 }
 
 .image-wrap {
-  position: relative;
-  inset: auto;
-  display: grid;
-  place-items: center;
-  min-height: 0;
-  overflow: hidden;
-  margin: 3px;
+  position: relative !important;
+  inset: auto !important;
+  display: grid !important;
+  place-items: center !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  margin: 3px !important;
+  padding: 4px !important;
+  border: 1px solid #d7dde2 !important;
+  border-radius: 7px !important;
+  background: #fff !important;
 }
 
 .grid.name-compact .image-wrap,
 .grid.name-full .image-wrap {
-  margin-bottom: 0;
+  margin-bottom: 0 !important;
 }
 
+/* どんな画像でも全体を必ず表示する。切り抜き・ズームはしない */
+.card-image {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: contain !important;
+  object-position: center center !important;
+  transform: none !important;
+}
+
+/* 商品名は画像に重ねない。黒帯も使わない */
 .card-name {
-  position: static;
-  z-index: auto;
-  left: auto;
-  right: auto;
-  bottom: auto;
-  display: none;
-  min-width: 0;
-  overflow: hidden;
-  margin: 4px 3px 3px;
-  border-radius: 6px;
-  color: #fff;
-  background: rgba(20, 24, 29, .92);
-  text-overflow: ellipsis;
+  position: static !important;
+  z-index: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  display: none !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  margin: 0 4px 3px !important;
+  padding: 0 !important;
+  border: 1px solid #d7dde2 !important;
+  border-top: 0 !important;
+  border-radius: 0 0 6px 6px !important;
+  color: #252b31 !important;
+  background: #f5f7f9 !important;
+  text-overflow: ellipsis !important;
 }
 
 .grid.name-compact .card-name {
-  display: block;
-  padding: 4px 6px;
-  font-size: calc(clamp(9px, .62vw, 12px) * var(--name-scale));
-  font-weight: 800;
-  line-height: 1.15;
-  white-space: nowrap;
+  display: block !important;
+  padding: 3px 6px !important;
+  font-size: calc(clamp(9px, .60vw, 11px) * var(--name-scale)) !important;
+  font-weight: 800 !important;
+  line-height: 1.08 !important;
+  white-space: nowrap !important;
 }
 
 .grid.name-full .card-name {
-  display: -webkit-box;
-  padding: 5px 7px;
-  font-size: calc(clamp(11px, .76vw, 15px) * var(--name-scale));
-  font-weight: 850;
-  line-height: 1.15;
-  white-space: normal;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  display: -webkit-box !important;
+  padding: 4px 6px !important;
+  font-size: calc(clamp(10px, .68vw, 13px) * var(--name-scale)) !important;
+  font-weight: 800 !important;
+  line-height: 1.12 !important;
+  white-space: normal !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 2 !important;
 }
 
-/* 画像は枠内に必ず全体が収まる */
-.card-image {
-  object-fit: contain;
-  object-position: center;
+/* 商品名行と価格欄の間に余計な隙間を作らない */
+.price-area {
+  margin-top: 0 !important;
 }
