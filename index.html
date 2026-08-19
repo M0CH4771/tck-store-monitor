@@ -9,17 +9,85 @@
   <script>
     (async () => {
       try {
-        const response = await fetch("base-stable.html?v=20260819-1900", { cache: "no-store" });
+        const VERSION = "20260819-1918";
+        const response = await fetch(`base-stable.html?v=${VERSION}`, { cache: "no-store" });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         let html = await response.text();
+
+        const replaceRequired = (search, replacement, label) => {
+          if (!html.includes(search)) throw new Error(`${label} の更新対象が見つかりません`);
+          html = html.replace(search, replacement);
+        };
+
+        replaceRequired(
+`          <select id="pageSizeInput">
+            <option value="6">6商品（1段）</option>
+            <option value="12">12商品（2段）</option>
+            <option value="18">18商品（3段）</option>
+            <option value="24">24商品（4段）</option>
+          </select>`,
+`          <select id="pageSizeInput">
+            <option value="1">1商品（1列×1段）</option>
+            <option value="2">2商品（2列×1段）</option>
+            <option value="3">3商品（3列×1段）</option>
+            <option value="4">4商品（4列×1段）</option>
+            <option value="6">6商品（3列×2段）</option>
+            <option value="8">8商品（4列×2段）</option>
+            <option value="10">10商品（5列×2段）</option>
+            <option value="12">12商品（6列×2段）</option>
+            <option value="15">15商品（5列×3段）</option>
+            <option value="18">18商品（6列×3段）</option>
+            <option value="20">20商品（7列×3段・1枠空き）</option>
+            <option value="21">21商品（7列×3段）</option>
+            <option value="24">24商品（8列×3段）</option>
+          </select>`,
+          "商品数設定"
+        );
+
+        replaceRequired(
+          "      const CURRENT_SETTINGS_VERSION = 6;\n      const PAGE_SIZE_OPTIONS = [6, 12, 18, 24];",
+          "      const CURRENT_SETTINGS_VERSION = 7;\n      const PAGE_SIZE_OPTIONS = [1, 2, 3, 4, 6, 8, 10, 12, 15, 18, 20, 21, 24];",
+          "設定バージョン"
+        );
+
+        const layoutPattern = /      function layoutForItemCount\(count\) \{[\s\S]*?      \}\n\n      function render\(\) \{/;
+        if (!layoutPattern.test(html)) throw new Error("レイアウト関数の更新対象が見つかりません");
+        html = html.replace(layoutPattern,
+`      function layoutForPageSize(pageSize) {
+        if (innerWidth < 760) {
+          const effective = Math.min(pageSize, 4);
+          const columns = Math.min(2, Math.max(1, effective));
+          return { columns, rows: Math.max(1, Math.ceil(effective / columns)) };
+        }
+        if (innerWidth < 1180) {
+          const effective = Math.min(pageSize, 8);
+          const columns = Math.min(4, Math.max(1, effective));
+          return { columns, rows: Math.max(1, Math.ceil(effective / columns)) };
+        }
+        const layouts = {
+          1: [1, 1], 2: [2, 1], 3: [3, 1], 4: [4, 1],
+          6: [3, 2], 8: [4, 2], 10: [5, 2], 12: [6, 2],
+          15: [5, 3], 18: [6, 3], 20: [7, 3], 21: [7, 3], 24: [8, 3]
+        };
+        const [columns, rows] = layouts[pageSize] || layouts[24];
+        return { columns, rows };
+      }
+
+      function render() {`);
+
+        replaceRequired(
+          "        const layout = layoutForItemCount(visible.length);",
+          "        const layout = layoutForPageSize(state.settings.pageSize);",
+          "固定レイアウト呼び出し"
+        );
+
         html = html.replace(
           "</head>",
-          '<link rel="stylesheet" href="hide-zero-stock.css?v=20260819-1900"><link rel="stylesheet" href="remaining-one.css?v=20260819-1900"></head>'
+          `<link rel="stylesheet" href="hide-zero-stock.css?v=${VERSION}"><link rel="stylesheet" href="remaining-one.css?v=${VERSION}"><link rel="stylesheet" href="compact-price.css?v=${VERSION}"></head>`
         );
-        html = html.replace(
-          "</body>",
-          '<script src="remaining-one.js?v=20260819-1900"><\/script><script src="fixed-layout.js?v=20260819-1900"><\/script></body>'
-        );
+        const remainingOneScript = `<script src="remaining-one.js?v=${VERSION}"></` + `script>`;
+        html = html.replace("</body>", `${remainingOneScript}</body>`);
+
         document.open();
         document.write(html);
         document.close();
