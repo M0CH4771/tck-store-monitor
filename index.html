@@ -9,12 +9,16 @@
   <script>
     (async () => {
       try {
-        const response = await fetch("base-stable.html?v=20260819-1817", { cache: "no-store" });
+        const response = await fetch("base-stable.html?v=20260819-1831", { cache: "no-store" });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         let html = await response.text();
         html = html.replace(
           "</head>",
-          '<link rel="stylesheet" href="hide-zero-stock.css?v=20260819-1817"></head>'
+          '<link rel="stylesheet" href="hide-zero-stock.css?v=20260819-1831"><link rel="stylesheet" href="remaining-one.css?v=20260819-1831"></head>'
+        );
+        html = html.replace(
+          "</body>",
+          '<script src="remaining-one.js?v=20260819-1831"><\/script></body>'
         );
         document.open();
         document.write(html);
