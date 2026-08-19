@@ -1,0 +1,14 @@
+/* 安定版のレイアウトは維持し、在庫0の価格枠だけ非表示 */
+.price-box.is-unavailable {
+  display: none !important;
+}
+
+/* 商品名非表示モード：価格が1種類だけなら既存の価格エリア内を1段で使用 */
+.grid.is-name-hidden .price-grid:has(.price-box.is-unavailable) {
+  grid-template-rows: minmax(0, 1fr) !important;
+}
+
+/* 商品名表示モード：残った価格枠だけ既存の2価格列を使用。画像・商品名列は変更しない */
+.grid:not(.is-name-hidden) .card:has(.price-box.is-unavailable) .price-box:not(.is-unavailable) {
+  grid-column: 3 / 5 !important;
+}
