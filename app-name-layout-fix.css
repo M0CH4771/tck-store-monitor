@@ -21,7 +21,7 @@
   min-height: 0 !important;
   overflow: hidden !important;
   margin: 3px !important;
-  padding: 4px !important;
+  padding: 2px !important;
   border: 1px solid #d7dde2 !important;
   border-radius: 7px !important;
   background: #fff !important;
@@ -32,15 +32,16 @@
   margin-bottom: 0 !important;
 }
 
-/* どんな画像でも全体を必ず表示する。切り抜き・ズームはしない */
+/* BOX画像は拡大して埋めず、元の縦横比を維持して必ず全体を表示する */
 .card-image {
   display: block !important;
-  width: 100% !important;
-  height: 100% !important;
-  max-width: 100% !important;
-  max-height: 100% !important;
+  width: auto !important;
+  height: auto !important;
+  max-width: 94% !important;
+  max-height: 94% !important;
   object-fit: contain !important;
   object-position: center center !important;
+  aspect-ratio: auto !important;
   transform: none !important;
 }
 
@@ -84,7 +85,6 @@
   -webkit-line-clamp: 2 !important;
 }
 
-/* 商品名行と価格欄の間に余計な隙間を作らない */
 .price-area {
   margin-top: 0 !important;
 }
