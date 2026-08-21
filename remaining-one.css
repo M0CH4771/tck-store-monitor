@@ -1,8 +1,10 @@
-/* 在庫1点だけを強調。レイアウト寸法は変更しない。 */
+/* 残り1点は赤文字で強調し、商品名表示時にも背景を塗りつぶさない。 */
 .stock.is-last-one {
-  border-color: #c8102e !important;
-  color: #ffffff !important;
-  background: #c8102e !important;
+  border-color: transparent !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  color: var(--red, #c8102e) !important;
+  background: transparent !important;
   box-shadow: none !important;
   font-weight: 900 !important;
   white-space: nowrap !important;
