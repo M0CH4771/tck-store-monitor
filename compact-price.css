@@ -144,13 +144,18 @@
   .grid.is-name-hidden .card {
     place-self: center !important;
     width: min(100%, var(--card-frame-width, 100%)) !important;
-    height: auto !important;
+    height: min(100%, var(--card-frame-height, 100%)) !important;
     max-height: 100% !important;
     min-height: 0;
-    aspect-ratio: 7 / 13;
   }
   .card.is-half-column-centered { left: 50%; }
   .price-box { max-height: 58px; }
+  .grid[data-layout-columns="8"] .price-box,
+  .grid[data-layout-columns="9"] .price-box {
+    padding-right: 5px !important;
+    padding-left: 5px !important;
+    column-gap: 4px !important;
+  }
 
   /*
    * BOX画像は横3:縦4の枠へ収める。
