@@ -230,18 +230,28 @@
     const snapshot = {
       image,
       source: image.getAttribute("src"),
+      inlineVisibility: image.style.visibility,
+      exportImage: null,
       wrapper,
       wrapperHadError: Boolean(wrapper?.classList.contains("is-error"))
     };
     const source = image.currentSrc || image.src;
 
     try {
-      if (isExternalImage(source)) {
-        image.src = await embeddedImageSource(image);
-        if (wrapper) wrapper.classList.remove("is-error");
-      }
+      const safeSource = isExternalImage(source)
+        ? await embeddedImageSource(image)
+        : source;
+      const exportImage = new Image();
+      exportImage.decoding = "async";
+      exportImage.src = safeSource;
+      await waitForImage(exportImage);
 
-      await waitForImage(image);
+      snapshot.exportImage = exportImage;
+      if (wrapper) wrapper.classList.remove("is-error");
+
+      // html2canvasには外部画像を一切触らせず、配置枠だけ撮影する。
+      // 商品画像は安全な内部データから、撮影後に同じ枠へ描画する。
+      image.style.visibility = "hidden";
       return snapshot;
     } catch (error) {
       restorePageImages([snapshot]);
@@ -280,8 +290,7 @@
 
   function restorePageImages(snapshots) {
     snapshots.forEach(snapshot => {
-      if (snapshot.source == null) snapshot.image.removeAttribute("src");
-      else snapshot.image.setAttribute("src", snapshot.source);
+      snapshot.image.style.visibility = snapshot.inlineVisibility;
 
       if (snapshot.wrapper) {
         snapshot.wrapper.classList.toggle("is-error", snapshot.wrapperHadError);
@@ -343,7 +352,7 @@
     });
   }
 
-  function drawPreparedImages(canvas, target) {
+  function drawPreparedImages(canvas, target, snapshots) {
     const finalContext = canvas.getContext("2d");
     if (!finalContext) throw new Error("商品画像をPNGへ描画できませんでした");
 
@@ -358,34 +367,24 @@
     const targetRect = target.getBoundingClientRect();
     const scaleX = canvas.width / Math.max(1, target.clientWidth);
     const scaleY = canvas.height / Math.max(1, target.clientHeight);
-    const images = Array.from(target.querySelectorAll(".card img.card-image")).filter(
-      image => image.getAttribute("src") && !image.closest(".image-wrap")?.classList.contains("is-error")
-    );
+    const preparedImages = snapshots.filter(snapshot => snapshot.exportImage);
     let drawnImages = 0;
 
     context.imageSmoothingEnabled = true;
     context.imageSmoothingQuality = "high";
 
-    images.forEach(image => {
-      if (!image.naturalWidth || !image.naturalHeight) return;
+    preparedImages.forEach(snapshot => {
+      const imageRect = snapshot.image.getBoundingClientRect();
+      const exportImage = snapshot.exportImage;
+      if (!exportImage.naturalWidth || !exportImage.naturalHeight) return;
 
-      const style = getComputedStyle(image);
-      if (
-        style.display === "none" ||
-        style.visibility === "hidden" ||
-        Number(style.opacity) === 0
-      ) {
-        return;
-      }
-
-      const imageRect = image.getBoundingClientRect();
       const boxWidth = Math.max(0, imageRect.width * scaleX);
       const boxHeight = Math.max(0, imageRect.height * scaleY);
       if (!boxWidth || !boxHeight) return;
 
       const originX = (imageRect.left - targetRect.left) * scaleX;
       const originY = (imageRect.top - targetRect.top) * scaleY;
-      const imageRatio = image.naturalWidth / image.naturalHeight;
+      const imageRatio = exportImage.naturalWidth / exportImage.naturalHeight;
       const boxRatio = boxWidth / boxHeight;
       let drawWidth;
       let drawHeight;
@@ -405,14 +404,14 @@
       context.beginPath();
       context.rect(originX, originY, boxWidth, boxHeight);
       context.clip();
-      context.drawImage(image, drawX, drawY, drawWidth, drawHeight);
+      context.drawImage(exportImage, drawX, drawY, drawWidth, drawHeight);
       context.restore();
       drawnImages += 1;
     });
 
-    if (images.length && drawnImages !== images.length) {
+    if (preparedImages.length && drawnImages !== preparedImages.length) {
       throw new Error(
-        `商品画像をPNGへ描画できませんでした（${drawnImages}/${images.length}枚）`
+        `商品画像をPNGへ描画できませんでした（${drawnImages}/${preparedImages.length}枚）`
       );
     }
 
@@ -443,9 +442,8 @@
         windowWidth: document.documentElement.clientWidth,
         windowHeight: document.documentElement.clientHeight
       });
-      // html2canvasは大きなdata URL画像をまれに描画しないため、
-      // 読み込み済みの商品画像を最後にCanvasへ直接重ねる。
-      drawPreparedImages(canvas, target);
+      // 商品画像は、外部URLではなく安全な内部データから最後に重ねる。
+      drawPreparedImages(canvas, target, snapshots);
       return await canvasToPng(canvas);
     } finally {
       restorePageImages(snapshots);
