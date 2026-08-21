@@ -9,7 +9,7 @@
   <script>
     (async () => {
       try {
-        const VERSION = "20260821-1625";
+        const VERSION = "20260821-1640";
         const response = await fetch(`base-stable.html?v=${VERSION}`, { cache: "no-store" });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         let html = await response.text();
@@ -33,7 +33,7 @@
             <option value="4">4商品（2列×2段）</option>
             <option value="6">6商品（3列×2段）</option>
             <option value="8">8商品（3列×3段・最終段中央）</option>
-            <option value="10">10商品（4列×3段・最終段中央）</option>
+            <option value="10">10商品（3列×4段・最終段中央）</option>
             <option value="12">12商品（3列×4段）</option>
             <option value="15">15商品（4列×4段・最終段中央）</option>
             <option value="18">18商品（4列×5段・最終段中央）</option>
@@ -63,7 +63,7 @@
         }
         const layouts = {
           1: [1, 1], 2: [2, 1], 3: [2, 2], 4: [2, 2],
-          6: [3, 2], 8: [3, 3], 10: [4, 3], 12: [3, 4],
+          6: [3, 2], 8: [3, 3], 10: [3, 4], 12: [3, 4],
           15: [4, 4], 18: [4, 5], 20: [4, 5], 21: [4, 6], 24: [4, 6]
         };
         const [columns, rows] = layouts[pageSize] || layouts[24];
@@ -81,7 +81,8 @@
         const frameWidth = columnWidth;
         const frameHeight = rowHeight;
         const imageScale = Math.max(.6, Math.min(1.4, state.settings.imageScale / 100));
-        const naturalImageColumn = Math.max(72, (rowHeight - 8) * .75 + 8);
+        // カード境界2px + 画像枠の上下余白8pxを除いた内寸を3:4にする。
+        const naturalImageColumn = Math.max(72, (rowHeight - 10) * .75 + 8);
         const minimumInfoWidth = Math.min(230, Math.max(150, frameWidth * .46));
         const maximumImageColumn = Math.max(72, frameWidth - minimumInfoWidth);
         const imageColumn = Math.min(naturalImageColumn, naturalImageColumn * imageScale, maximumImageColumn);
