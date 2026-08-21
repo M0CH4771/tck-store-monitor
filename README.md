@@ -29,7 +29,7 @@ F列またはH列のどちらかが1以上の商品だけを表示します。�
 
 ```javascript
 const MONITOR_SETTINGS = {
-  sheetName: "販売在庫",
+  sheetName: "サイト反映",
   headerRow: 1,
   cacheSeconds: 20
 };
