@@ -146,11 +146,38 @@
   font-size: max(7px, .58em);
   font-weight: 850;
   line-height: .9;
-  letter-spacing: .075em;
+  letter-spacing: .04em;
 }
 
 .price-box.special .price-label::after {
   color: #6b5700;
+}
+
+/* 注意書きは日英を上下に分け、遠目でも視線の流れを崩さない。 */
+.footer-note {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  overflow: hidden;
+  line-height: 1;
+  text-overflow: clip;
+  white-space: normal;
+}
+
+.footer-note > span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.footer-note-en {
+  color: #68737e;
+  font-size: .78em;
+  font-weight: 750;
+  letter-spacing: .015em;
 }
 
 .price,
