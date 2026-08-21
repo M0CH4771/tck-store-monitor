@@ -6,7 +6,7 @@
 const MONITOR_SETTINGS = {
   // 空欄なら、このスプレッドシートの先頭シートを使用します。
   // 指定する場合はタブ名を完全一致で入力してください。
-  sheetName: "",
+  sheetName: "サイト反映",
 
   headerRow: 1,
   cacheSeconds: 20
