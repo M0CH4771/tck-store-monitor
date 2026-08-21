@@ -150,6 +150,7 @@
   }
   .card.is-half-column-centered { left: 50%; }
   .price-box { max-height: 58px; }
+  .grid[data-layout-columns="7"] .price-box,
   .grid[data-layout-columns="8"] .price-box,
   .grid[data-layout-columns="9"] .price-box {
     padding-right: 5px !important;
