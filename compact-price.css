@@ -136,6 +136,23 @@
   white-space: nowrap;
 }
 
+/* 店頭で日本語を主表示しつつ、訪日客にも意味が伝わる英語を併記する。 */
+.price-label::after,
+.grid.is-name-hidden .price-label::after {
+  content: attr(data-en);
+  display: block;
+  margin-top: 1px;
+  color: #59636d;
+  font-size: max(7px, .58em);
+  font-weight: 850;
+  line-height: .9;
+  letter-spacing: .075em;
+}
+
+.price-box.special .price-label::after {
+  color: #6b5700;
+}
+
 .price,
 .grid.is-name-hidden .price {
   grid-column: 1 !important;
@@ -185,12 +202,24 @@
 
 .stock-label,
 .grid.is-name-hidden .stock-label {
-  display: inline !important;
+  display: inline-grid !important;
+  justify-items: end;
   color: #59636d;
   font-size: min(var(--stock-label-font-size), var(--card-label-cap, 999px)) !important;
   font-weight: 850 !important;
   line-height: 1 !important;
   letter-spacing: 0 !important;
+}
+
+.stock-label::after,
+.grid.is-name-hidden .stock-label::after {
+  content: attr(data-en);
+  display: block;
+  margin-top: 1px;
+  font-size: max(6px, .68em);
+  font-weight: 850;
+  line-height: .85;
+  letter-spacing: .06em;
 }
 
 .stock-count,
@@ -232,7 +261,9 @@
 
 .stock.is-last-one .stock-label,
 .price-box.special .stock.is-last-one .stock-label {
-  display: block !important;
+  display: flex !important;
+  align-items: baseline;
+  gap: 2px;
   color: var(--red) !important;
   font-size: max(
     8px,
@@ -244,6 +275,16 @@
   ) !important;
   font-weight: 950 !important;
   line-height: .9 !important;
+}
+
+.stock.is-last-one .stock-label::after,
+.price-box.special .stock.is-last-one .stock-label::after {
+  content: "ONLY";
+  display: inline;
+  margin: 0;
+  font-size: max(6px, .66em);
+  line-height: 1;
+  letter-spacing: .04em;
 }
 
 .stock.is-last-one .stock-count,
