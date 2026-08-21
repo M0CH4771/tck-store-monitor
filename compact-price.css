@@ -77,11 +77,12 @@
 }
 
 .price-box.is-unavailable {
-  display: none !important;
+  display: grid !important;
+  opacity: 1 !important;
 }
 
 .price-grid:has(> .price-box.is-unavailable) {
-  grid-template-rows: minmax(0, 1fr) !important;
+  grid-template-rows: repeat(2, minmax(0, 1fr)) !important;
 }
 
 .price-box,
@@ -101,10 +102,23 @@
   border-radius: 6px !important;
 }
 
-/* 商品名非表示時の高い詳細度よりも優先し、在庫0の価格枠を必ず隠す */
+/* 片方が在庫0でも、通常価格・状態特価・価格・0点を両方表示する */
 .grid .price-box.is-unavailable,
 .grid.is-name-hidden .price-box.is-unavailable {
-  display: none !important;
+  display: grid !important;
+  opacity: 1 !important;
+}
+
+.grid .price-box.is-unavailable .price,
+.grid.is-name-hidden .price-box.is-unavailable .price {
+  color: var(--text) !important;
+}
+
+.grid .price-box.is-unavailable .stock-label,
+.grid .price-box.is-unavailable .stock-count,
+.grid.is-name-hidden .price-box.is-unavailable .stock-label,
+.grid.is-name-hidden .price-box.is-unavailable .stock-count {
+  color: #68737e !important;
 }
 
 .price-label,
@@ -209,6 +223,11 @@
   overflow: hidden !important;
   gap: 0 !important;
   color: var(--red) !important;
+  border-color: transparent !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
 .stock.is-last-one .stock-label,
@@ -264,4 +283,33 @@
     width: 100% !important;
     height: 100% !important;
   }
+}
+
+.control-button.export-image-button {
+  width: auto !important;
+  min-width: 52px;
+  padding: 0 9px !important;
+  font-size: 11px;
+  font-weight: 950;
+  letter-spacing: .04em;
+}
+
+.control-button.export-image-button[aria-busy="true"] {
+  cursor: wait;
+  opacity: .72;
+}
+
+body.is-exporting .controls,
+body.is-exporting .nav-button,
+body.is-exporting dialog,
+body.is-exporting .toast {
+  display: none !important;
+}
+
+body.is-exporting .card {
+  animation: none !important;
+}
+
+body.is-exporting .progress {
+  animation-play-state: paused !important;
 }
