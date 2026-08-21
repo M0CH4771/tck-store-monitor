@@ -1,4 +1,4 @@
-/* 2026-08-19: 縦型カード + コンパクト価格表示 */
+/* 2026-08-21: 縦型カード + BOX向け3:4画像フレーム */
 .grid { grid-auto-flow: row !important; }
 .card,
 .grid.is-name-hidden .card {
@@ -116,7 +116,31 @@
   line-height: 1;
 }
 .stock.is-last-one .stock-count { color: var(--red); font-weight: 950; }
+
 @media (min-width: 1180px) {
   .card { min-height: 0; }
   .price-box { max-height: 58px; }
+
+  /*
+   * BOX画像は横3:縦4の枠へ収める。
+   * 通常は価格欄を除いた残りの高さを基準にし、横幅が先に不足する
+   * 3・4・12商品レイアウトだけは横幅を基準にして枠内へ収める。
+   */
+  .image-wrap,
+  .grid.is-name-hidden .image-wrap {
+    place-self: center !important;
+    width: auto !important;
+    height: calc(100% - 2px) !important;
+    max-width: calc(100% - 8px) !important;
+    margin: 1px auto !important;
+    aspect-ratio: 3 / 4 !important;
+  }
+
+  .grid[data-page-size="3"] .image-wrap,
+  .grid[data-page-size="4"] .image-wrap,
+  .grid[data-page-size="12"] .image-wrap {
+    width: calc(100% - 8px) !important;
+    height: auto !important;
+    max-height: calc(100% - 4px) !important;
+  }
 }
