@@ -2,12 +2,17 @@
   "use strict";
 
   const SETTINGS_KEY = "tck-store-monitor-settings-v1";
+  const IMAGE_CONCURRENCY = 6;
   const button = document.getElementById("exportImageButton");
   if (!button) return;
 
   const imageDataCache = new Map();
+  const imageRequestCache = new Map();
+  const directImageFailures = new Set();
   let exporting = false;
   let resetTimer = 0;
+  let warmupTimer = 0;
+  let warmupSequence = 0;
   let jsonpSequence = 0;
 
   button.dataset.exportReady = "true";
@@ -108,25 +113,35 @@
   async function fetchImageDirectly(source) {
     const cacheKey = `url:${source}`;
     if (imageDataCache.has(cacheKey)) return imageDataCache.get(cacheKey);
+    if (imageRequestCache.has(cacheKey)) return imageRequestCache.get(cacheKey);
 
-    const response = await fetch(source, {
-      cache: "force-cache",
-      credentials: "omit",
-      mode: "cors"
-    });
+    const request = (async () => {
+      const response = await fetch(source, {
+        cache: "force-cache",
+        credentials: "omit",
+        mode: "cors"
+      });
 
-    if (!response.ok) {
-      throw new Error(`画像配信元からHTTP ${response.status}が返されました`);
+      if (!response.ok) {
+        throw new Error(`画像配信元からHTTP ${response.status}が返されました`);
+      }
+
+      const blob = await response.blob();
+      if (!String(blob.type || "").toLowerCase().startsWith("image/")) {
+        throw new Error("画像配信元が画像以外のデータを返しました");
+      }
+
+      const imageData = await blobToDataUrl(blob);
+      imageDataCache.set(cacheKey, imageData);
+      return imageData;
+    })();
+
+    imageRequestCache.set(cacheKey, request);
+    try {
+      return await request;
+    } finally {
+      imageRequestCache.delete(cacheKey);
     }
-
-    const blob = await response.blob();
-    if (!String(blob.type || "").toLowerCase().startsWith("image/")) {
-      throw new Error("画像配信元が画像以外のデータを返しました");
-    }
-
-    const imageData = await blobToDataUrl(blob);
-    imageDataCache.set(cacheKey, imageData);
-    return imageData;
   }
 
   function appsScriptEndpoint() {
@@ -142,21 +157,22 @@
     throw new Error("設定画面のApps Script URLを確認してください");
   }
 
-  function fetchImageThroughAppsScript(row) {
+  function fetchImageThroughAppsScript(row, source) {
     const numericRow = Number(row);
     if (!Number.isInteger(numericRow) || numericRow < 1) {
       return Promise.reject(new Error("商品の行番号を確認できませんでした"));
     }
 
-    const cacheKey = `row:${numericRow}`;
+    const cacheKey = `row:${numericRow}:${source}`;
     if (imageDataCache.has(cacheKey)) {
       return Promise.resolve(imageDataCache.get(cacheKey));
     }
+    if (imageRequestCache.has(cacheKey)) return imageRequestCache.get(cacheKey);
 
     const endpoint = appsScriptEndpoint();
     const callback = `__tckExportImage_${Date.now()}_${jsonpSequence += 1}`;
 
-    return new Promise((resolve, reject) => {
+    const request = new Promise((resolve, reject) => {
       const script = document.createElement("script");
       const separator = endpoint.includes("?") ? "&" : "?";
       const timer = window.setTimeout(() => {
@@ -181,7 +197,6 @@
           : "";
 
         if (payload && payload.ok && /^data:image\//i.test(imageData)) {
-          imageDataCache.set(cacheKey, imageData);
           resolve(imageData);
           return;
         }
@@ -202,26 +217,38 @@
         `&callback=${encodeURIComponent(callback)}&_=${Date.now()}`;
       document.head.appendChild(script);
     });
+
+    const cachedRequest = request.then(imageData => {
+      imageDataCache.set(cacheKey, imageData);
+      return imageData;
+    }).finally(() => {
+      imageRequestCache.delete(cacheKey);
+    });
+    imageRequestCache.set(cacheKey, cachedRequest);
+    return cachedRequest;
   }
 
   async function embeddedImageSource(image) {
     const source = image.currentSrc || image.src;
+    const row = image.closest(".card")?.dataset.row;
+
+    if (!directImageFailures.has(source)) {
+      try {
+        return await fetchImageDirectly(source);
+      } catch (_) {
+        directImageFailures.add(source);
+      }
+    }
 
     try {
-      return await fetchImageDirectly(source);
-    } catch (directError) {
-      const row = image.closest(".card")?.dataset.row;
-
-      try {
-        return await fetchImageThroughAppsScript(row);
-      } catch (proxyError) {
-        const product = image.alt || `スプレッドシート${row || "?"}行目`;
-        throw new Error(
-          `「${product}」の画像をPNGへ取り込めません。` +
-          "Apps ScriptのCode.gsを最新版へ置き換え、新しいバージョンとして再デプロイしてください。" +
-          `（${proxyError.message || directError.message}）`
-        );
-      }
+      return await fetchImageThroughAppsScript(row, source);
+    } catch (proxyError) {
+      const product = image.alt || `スプレッドシート${row || "?"}行目`;
+      throw new Error(
+        `「${product}」の画像をPNGへ取り込めません。` +
+        "Apps ScriptのCode.gsを最新版へ置き換え、新しいバージョンとして再デプロイしてください。" +
+        `（${proxyError.message}）`
+      );
     }
   }
 
@@ -278,7 +305,7 @@
     }
 
     await Promise.all(
-      Array.from({ length: Math.min(3, Math.max(1, images.length)) }, worker)
+      Array.from({ length: Math.min(IMAGE_CONCURRENCY, Math.max(1, images.length)) }, worker)
     );
 
     if (errors.length) {
@@ -296,6 +323,54 @@
         snapshot.wrapper.classList.toggle("is-error", snapshot.wrapperHadError);
       }
     });
+  }
+
+  async function warmVisibleImages(sequence) {
+    const images = Array.from(document.querySelectorAll(".card img.card-image"))
+      .filter(image => isExternalImage(image.currentSrc || image.src));
+
+    if (!images.length) {
+      if (sequence === warmupSequence) {
+        button.dataset.imageCacheStatus = "ready";
+        button.dataset.cachedImages = "0";
+      }
+      return;
+    }
+
+    button.dataset.imageCacheStatus = "working";
+    let cursor = 0;
+    let cachedImages = 0;
+
+    async function worker() {
+      while (cursor < images.length) {
+        const image = images[cursor];
+        cursor += 1;
+        try {
+          await embeddedImageSource(image);
+          cachedImages += 1;
+        } catch (_) {
+          // 保存ボタンを押した時に、商品名付きの正式なエラーを表示する。
+        }
+      }
+    }
+
+    await Promise.all(
+      Array.from({ length: Math.min(IMAGE_CONCURRENCY, images.length) }, worker)
+    );
+
+    if (sequence === warmupSequence) {
+      button.dataset.cachedImages = String(cachedImages);
+      button.dataset.imageCacheStatus = cachedImages === images.length ? "ready" : "partial";
+    }
+  }
+
+  function scheduleImageWarmup() {
+    window.clearTimeout(warmupTimer);
+    const sequence = warmupSequence += 1;
+    button.dataset.imageCacheStatus = "scheduled";
+    warmupTimer = window.setTimeout(() => {
+      warmVisibleImages(sequence).catch(error => console.warn("商品画像の先読みを完了できませんでした", error));
+    }, 120);
   }
 
   function pageInfo() {
@@ -632,7 +707,6 @@
         pauseButton.click();
       }
 
-      imageDataCache.clear();
       document.body.classList.remove("is-exporting");
       button.disabled = false;
       button.removeAttribute("aria-busy");
@@ -650,5 +724,10 @@
     }
   }
 
+  const productGrid = document.getElementById("productGrid");
+  if (productGrid) {
+    new MutationObserver(scheduleImageWarmup).observe(productGrid, { childList: true });
+  }
+  scheduleImageWarmup();
   button.addEventListener("click", exportScreen);
 })();
