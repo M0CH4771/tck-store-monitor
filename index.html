@@ -9,7 +9,7 @@
   <script>
     (async () => {
       try {
-        const VERSION = "20260821-1930";
+        const VERSION = "20260821-1945";
         const response = await fetch(`base-stable.html?v=${VERSION}`, { cache: "no-store" });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         let html = await response.text();
