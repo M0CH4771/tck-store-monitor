@@ -5,6 +5,9 @@
   if (!button) return;
 
   let exporting = false;
+  let resetTimer = 0;
+  button.dataset.exportReady = "true";
+  button.dataset.exportStatus = "ready";
 
   function twoDigits(value) {
     return String(value).padStart(2, "0");
@@ -33,6 +36,8 @@
   async function exportScreen() {
     if (exporting) return;
     exporting = true;
+    window.clearTimeout(resetTimer);
+    button.dataset.exportStatus = "working";
     button.disabled = true;
     button.setAttribute("aria-busy", "true");
     const originalText = button.textContent;
@@ -80,14 +85,23 @@
       link.click();
       link.remove();
       setTimeout(() => URL.revokeObjectURL(url), 30000);
+      button.dataset.exportStatus = "complete";
     } catch (error) {
       console.error(error);
+      button.dataset.exportStatus = "error";
       window.alert(`画像を保存できませんでした。\n${error.message || "ページを再読み込みしてお試しください。"}`);
     } finally {
       document.body.classList.remove("is-exporting");
       button.disabled = false;
       button.removeAttribute("aria-busy");
-      button.textContent = originalText;
+      const completed = button.dataset.exportStatus === "complete";
+      button.textContent = completed ? "保存済" : originalText;
+      if (completed) {
+        resetTimer = window.setTimeout(() => {
+          button.textContent = originalText;
+          button.dataset.exportStatus = "ready";
+        }, 1600);
+      }
       exporting = false;
     }
   }
