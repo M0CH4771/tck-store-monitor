@@ -9,7 +9,7 @@
   <script>
     (async () => {
       try {
-        const VERSION = "20260821-1415";
+        const VERSION = "20260821-1435";
         const response = await fetch(`base-stable.html?v=${VERSION}`, { cache: "no-store" });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         let html = await response.text();
@@ -75,15 +75,39 @@
 
       function applyCardFrameForLayout(layout) {
         const gridStyle = getComputedStyle(ui.grid);
+        const columnGap = Number.parseFloat(gridStyle.columnGap) || 0;
         const rowGap = Number.parseFloat(gridStyle.rowGap) || 0;
+        const usableWidth = Math.max(1, ui.grid.clientWidth - columnGap * (layout.columns - 1));
         const usableHeight = Math.max(1, ui.grid.clientHeight - rowGap * (layout.rows - 1));
+        const columnWidth = usableWidth / layout.columns;
         const rowHeight = usableHeight / layout.rows;
+        const cards = Array.from(ui.grid.querySelectorAll(".card"));
+        const pricePanelHeight = Math.max(0, ...cards.map(card => {
+          const panel = card.querySelector(".price-grid");
+          return panel ? panel.getBoundingClientRect().height : 0;
+        }));
+        const nameHeight = state.settings.showProductName
+          ? Math.max(0, ...cards.map(card => {
+              const name = card.querySelector(".card-name");
+              return name ? name.getBoundingClientRect().height : 0;
+            }))
+          : 0;
 
-        // 12商品（6列×2段）で最も自然に見える商品枠の比率を全レイアウトへ適用。
-        // 商品枠の中では画像を横3:縦4のまま表示し、価格欄の高さも確保する。
-        const referenceCardAspect = 7 / 13;
-        const frameWidth = Math.max(1, rowHeight * referenceCardAspect);
+        // 画像枠の左右余白10pxと、基準レイアウトにある上下余白約28pxを含める。
+        // 1・2段は3:4画像から必要高を逆算。3段は価格幅を優先して基準比率を使う。
+        const fixedContentHeight = pricePanelHeight + nameHeight + 28;
+        let frameWidth;
+        let frameHeight;
+        if (layout.rows <= 2) {
+          const heightLimitedWidth = Math.max(1, (rowHeight - fixedContentHeight) * 3 / 4 + 10);
+          frameWidth = Math.min(columnWidth, heightLimitedWidth);
+          frameHeight = Math.min(rowHeight, Math.max(1, (frameWidth - 10) * 4 / 3 + fixedContentHeight));
+        } else {
+          frameWidth = Math.min(columnWidth, rowHeight * 7 / 13);
+          frameHeight = rowHeight;
+        }
         document.documentElement.style.setProperty("--card-frame-width", frameWidth.toFixed(2) + "px");
+        document.documentElement.style.setProperty("--card-frame-height", frameHeight.toFixed(2) + "px");
       }
 
       function render() {`);
@@ -96,7 +120,7 @@
 
         replaceRequired(
           "        document.documentElement.style.setProperty(\"--columns\", String(layout.columns));\n        document.documentElement.style.setProperty(\"--rows\", String(layout.rows));",
-          "        document.documentElement.style.setProperty(\"--columns\", String(layout.columns));\n        document.documentElement.style.setProperty(\"--rows\", String(layout.rows));\n        ui.grid.dataset.pageSize = String(state.settings.pageSize);\n        ui.grid.dataset.layoutColumns = String(layout.columns);\n        ui.grid.dataset.layoutRows = String(layout.rows);\n        applyCardFrameForLayout(layout);",
+          "        document.documentElement.style.setProperty(\"--columns\", String(layout.columns));\n        document.documentElement.style.setProperty(\"--rows\", String(layout.rows));\n        ui.grid.dataset.pageSize = String(state.settings.pageSize);\n        ui.grid.dataset.layoutColumns = String(layout.columns);\n        ui.grid.dataset.layoutRows = String(layout.rows);",
           "画像比率用レイアウト属性"
         );
 
@@ -116,6 +140,12 @@
           fragment.appendChild(card);
         });`,
           "最終段中央寄せ"
+        );
+
+        replaceRequired(
+          "        ui.grid.appendChild(fragment);",
+          "        ui.grid.appendChild(fragment);\n        applyCardFrameForLayout(layout);",
+          "商品枠の実寸調整"
         );
 
         html = html.replace(
