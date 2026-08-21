@@ -343,6 +343,74 @@
     });
   }
 
+  function drawPreparedImages(canvas, target) {
+    const context = canvas.getContext("2d");
+    if (!context) throw new Error("商品画像をPNGへ描画できませんでした");
+
+    const targetRect = target.getBoundingClientRect();
+    const scaleX = canvas.width / Math.max(1, target.clientWidth);
+    const scaleY = canvas.height / Math.max(1, target.clientHeight);
+    const images = Array.from(target.querySelectorAll(".card img.card-image")).filter(
+      image => image.getAttribute("src") && !image.closest(".image-wrap")?.classList.contains("is-error")
+    );
+    let drawnImages = 0;
+
+    context.imageSmoothingEnabled = true;
+    context.imageSmoothingQuality = "high";
+
+    images.forEach(image => {
+      if (!image.naturalWidth || !image.naturalHeight) return;
+
+      const style = getComputedStyle(image);
+      if (
+        style.display === "none" ||
+        style.visibility === "hidden" ||
+        Number(style.opacity) === 0
+      ) {
+        return;
+      }
+
+      const imageRect = image.getBoundingClientRect();
+      const boxWidth = Math.max(0, imageRect.width * scaleX);
+      const boxHeight = Math.max(0, imageRect.height * scaleY);
+      if (!boxWidth || !boxHeight) return;
+
+      const originX = (imageRect.left - targetRect.left) * scaleX;
+      const originY = (imageRect.top - targetRect.top) * scaleY;
+      const imageRatio = image.naturalWidth / image.naturalHeight;
+      const boxRatio = boxWidth / boxHeight;
+      let drawWidth;
+      let drawHeight;
+
+      if (imageRatio > boxRatio) {
+        drawWidth = boxWidth;
+        drawHeight = drawWidth / imageRatio;
+      } else {
+        drawHeight = boxHeight;
+        drawWidth = drawHeight * imageRatio;
+      }
+
+      const drawX = originX + (boxWidth - drawWidth) / 2;
+      const drawY = originY + (boxHeight - drawHeight) / 2;
+
+      context.save();
+      context.beginPath();
+      context.rect(originX, originY, boxWidth, boxHeight);
+      context.clip();
+      context.drawImage(image, drawX, drawY, drawWidth, drawHeight);
+      context.restore();
+      drawnImages += 1;
+    });
+
+    if (images.length && drawnImages !== images.length) {
+      throw new Error(
+        `商品画像をPNGへ描画できませんでした（${drawnImages}/${images.length}枚）`
+      );
+    }
+
+    return drawnImages;
+  }
+
   async function captureCurrentPage(target) {
     const snapshots = await preparePageImages();
 
@@ -362,6 +430,9 @@
         windowWidth: document.documentElement.clientWidth,
         windowHeight: document.documentElement.clientHeight
       });
+      // html2canvasは大きなdata URL画像をまれに描画しないため、
+      // 読み込み済みの商品画像を最後にCanvasへ直接重ねる。
+      drawPreparedImages(canvas, target);
       return await canvasToPng(canvas);
     } finally {
       restorePageImages(snapshots);
