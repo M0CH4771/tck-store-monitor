@@ -9,7 +9,7 @@
   <script>
     (async () => {
       try {
-        const VERSION = "20260821-1945";
+        const VERSION = "20260821-2000";
         const response = await fetch(`base-stable.html?v=${VERSION}`, { cache: "no-store" });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         let html = await response.text();
@@ -29,16 +29,16 @@
 `          <select id="pageSizeInput">
             <option value="1">1商品（1列×1段）</option>
             <option value="2">2商品（2列×1段）</option>
-            <option value="3">3商品（2列×2段・最終段中央）</option>
+            <option value="3">3商品（2列×2段）</option>
             <option value="4">4商品（2列×2段）</option>
             <option value="6">6商品（3列×2段）</option>
-            <option value="8">8商品（3列×3段・最終段中央）</option>
-            <option value="10">10商品（3列×4段・最終段中央）</option>
+            <option value="8">8商品（3列×3段）</option>
+            <option value="10">10商品（3列×4段）</option>
             <option value="12">12商品（3列×4段）</option>
             <option value="16">16商品（4列×4段）</option>
-            <option value="18">18商品（4列×5段・最終段中央）</option>
+            <option value="18">18商品（4列×5段）</option>
             <option value="20">20商品（4列×5段）</option>
-            <option value="21">21商品（4列×6段・最終段中央）</option>
+            <option value="21">21商品（4列×6段）</option>
             <option value="24">24商品（4列×6段）</option>
           </select>`,
           "商品数設定"
@@ -118,24 +118,6 @@
           "        document.documentElement.style.setProperty(\"--columns\", String(layout.columns));\n        document.documentElement.style.setProperty(\"--rows\", String(layout.rows));",
           "        document.documentElement.style.setProperty(\"--columns\", String(layout.columns));\n        document.documentElement.style.setProperty(\"--rows\", String(layout.rows));\n        ui.grid.dataset.pageSize = String(state.settings.pageSize);\n        ui.grid.dataset.layoutColumns = String(layout.columns);\n        ui.grid.dataset.layoutRows = String(layout.rows);",
           "画像比率用レイアウト属性"
-        );
-
-        replaceRequired(
-          "        visible.forEach((product, index) => fragment.appendChild(createCard(product, index)));",
-`        const lastRowCount = visible.length % layout.columns;
-        const lastRowStart = visible.length - lastRowCount;
-        const emptyLastRowSlots = lastRowCount > 0 ? layout.columns - lastRowCount : 0;
-        visible.forEach((product, index) => {
-          const card = createCard(product, index);
-          if (lastRowCount > 0 && index === lastRowStart) {
-            card.style.gridColumnStart = String(Math.floor(emptyLastRowSlots / 2) + 1);
-          }
-          if (emptyLastRowSlots % 2 === 1 && index >= lastRowStart) {
-            card.classList.add("is-half-column-centered");
-          }
-          fragment.appendChild(card);
-        });`,
-          "最終段中央寄せ"
         );
 
         replaceRequired(
