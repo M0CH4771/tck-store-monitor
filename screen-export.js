@@ -2,7 +2,8 @@
   "use strict";
 
   const SETTINGS_KEY = "tck-store-monitor-settings-v1";
-  const IMAGE_CONCURRENCY = 6;
+  const EXPORT_IMAGE_CONCURRENCY = 3;
+  const WARMUP_IMAGE_CONCURRENCY = 2;
   const button = document.getElementById("exportImageButton");
   if (!button) return;
 
@@ -305,7 +306,7 @@
     }
 
     await Promise.all(
-      Array.from({ length: Math.min(IMAGE_CONCURRENCY, Math.max(1, images.length)) }, worker)
+      Array.from({ length: Math.min(EXPORT_IMAGE_CONCURRENCY, Math.max(1, images.length)) }, worker)
     );
 
     if (errors.length) {
@@ -355,7 +356,7 @@
     }
 
     await Promise.all(
-      Array.from({ length: Math.min(IMAGE_CONCURRENCY, images.length) }, worker)
+      Array.from({ length: Math.min(WARMUP_IMAGE_CONCURRENCY, images.length) }, worker)
     );
 
     if (sequence === warmupSequence) {
