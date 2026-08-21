@@ -179,7 +179,7 @@
 .stock-count,
 .grid.is-name-hidden .stock-count {
   color: #27313a;
-  font-size: min(calc(var(--stock-font-size) * .72), var(--card-stock-cap, 999px)) !important;
+  font-size: min(var(--stock-font-size), var(--card-stock-cap, 999px)) !important;
   font-weight: 950 !important;
   line-height: 1 !important;
 }
@@ -216,7 +216,7 @@
     8px,
     min(
       calc(var(--stock-font-size) * .42),
-      calc(var(--card-stock-cap, 999px) * .55),
+      calc(var(--card-stock-cap, 999px) * .50),
       calc(var(--card-price-cap, 999px) * .30)
     )
   ) !important;
@@ -230,9 +230,9 @@
   font-size: max(
     13px,
     min(
-      calc(var(--stock-font-size) * .66),
+      calc(var(--stock-font-size) * .90),
       var(--card-stock-cap, 999px),
-      calc(var(--card-price-cap, 999px) * .58)
+      calc(var(--card-price-cap, 999px) * .70)
     )
   ) !important;
   font-weight: 1000 !important;

@@ -9,7 +9,7 @@
   <script>
     (async () => {
       try {
-        const VERSION = "20260821-1610";
+        const VERSION = "20260821-1625";
         const response = await fetch(`base-stable.html?v=${VERSION}`, { cache: "no-store" });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         let html = await response.text();
@@ -34,12 +34,12 @@
             <option value="6">6商品（3列×2段）</option>
             <option value="8">8商品（3列×3段・最終段中央）</option>
             <option value="10">10商品（4列×3段・最終段中央）</option>
-            <option value="12">12商品（4列×3段）</option>
+            <option value="12">12商品（3列×4段）</option>
             <option value="15">15商品（4列×4段・最終段中央）</option>
-            <option value="18">18商品（5列×4段・最終段中央）</option>
-            <option value="20">20商品（5列×4段）</option>
-            <option value="21">21商品（5列×5段・最終段中央）</option>
-            <option value="24">24商品（5列×5段・最終段中央）</option>
+            <option value="18">18商品（4列×5段・最終段中央）</option>
+            <option value="20">20商品（4列×5段）</option>
+            <option value="21">21商品（4列×6段・最終段中央）</option>
+            <option value="24">24商品（4列×6段）</option>
           </select>`,
           "商品数設定"
         );
@@ -63,8 +63,8 @@
         }
         const layouts = {
           1: [1, 1], 2: [2, 1], 3: [2, 2], 4: [2, 2],
-          6: [3, 2], 8: [3, 3], 10: [4, 3], 12: [4, 3],
-          15: [4, 4], 18: [5, 4], 20: [5, 4], 21: [5, 5], 24: [5, 5]
+          6: [3, 2], 8: [3, 3], 10: [4, 3], 12: [3, 4],
+          15: [4, 4], 18: [4, 5], 20: [4, 5], 21: [4, 6], 24: [4, 6]
         };
         const [columns, rows] = layouts[pageSize] || layouts[24];
         return { columns, rows };
@@ -81,12 +81,12 @@
         const frameWidth = columnWidth;
         const frameHeight = rowHeight;
         const imageScale = Math.max(.6, Math.min(1.4, state.settings.imageScale / 100));
-        const naturalImageColumn = rowHeight * .75 + 8;
+        const naturalImageColumn = Math.max(72, (rowHeight - 8) * .75 + 8);
         const minimumInfoWidth = Math.min(230, Math.max(150, frameWidth * .46));
         const maximumImageColumn = Math.max(72, frameWidth - minimumInfoWidth);
         const imageColumn = Math.min(naturalImageColumn, naturalImageColumn * imageScale, maximumImageColumn);
         const infoWidth = Math.max(1, frameWidth - imageColumn);
-        const priceCap = Math.max(20, Math.min(rowHeight * .24, infoWidth / 4.4));
+        const priceCap = Math.max(20, Math.min(rowHeight * .24, infoWidth / 5.4));
         const stockCap = Math.max(14, Math.min(rowHeight * .18, infoWidth * .17));
         const labelCap = Math.max(10, Math.min(rowHeight * .11, infoWidth * .1));
         const nameCap = Math.max(11, Math.min(rowHeight * .12, infoWidth * .1));
