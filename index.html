@@ -9,7 +9,7 @@
   <script>
     (async () => {
       try {
-        const VERSION = "20260821-1215";
+        const VERSION = "20260821-1415";
         const response = await fetch(`base-stable.html?v=${VERSION}`, { cache: "no-store" });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         let html = await response.text();
@@ -31,13 +31,13 @@
             <option value="2">2商品（2列×1段）</option>
             <option value="3">3商品（3列×1段）</option>
             <option value="4">4商品（4列×1段）</option>
-            <option value="6">6商品（4列×2段・中央寄せ）</option>
+            <option value="6">6商品（6列×1段）</option>
             <option value="8">8商品（4列×2段）</option>
             <option value="10">10商品（5列×2段）</option>
             <option value="12">12商品（6列×2段）</option>
-            <option value="15">15商品（6列×3段・中央寄せ）</option>
-            <option value="18">18商品（6列×3段）</option>
-            <option value="20">20商品（7列×3段・1枠空き）</option>
+            <option value="15">15商品（8列×2段・最終段中央）</option>
+            <option value="18">18商品（9列×2段）</option>
+            <option value="20">20商品（7列×3段・最終段中央）</option>
             <option value="21">21商品（7列×3段）</option>
             <option value="24">24商品（8列×3段）</option>
           </select>`,
@@ -66,11 +66,24 @@
         }
         const layouts = {
           1: [1, 1], 2: [2, 1], 3: [3, 1], 4: [4, 1],
-          6: [4, 2], 8: [4, 2], 10: [5, 2], 12: [6, 2],
-          15: [6, 3], 18: [6, 3], 20: [7, 3], 21: [7, 3], 24: [8, 3]
+          6: [6, 1], 8: [4, 2], 10: [5, 2], 12: [6, 2],
+          15: [8, 2], 18: [9, 2], 20: [7, 3], 21: [7, 3], 24: [8, 3]
         };
         const [columns, rows] = layouts[pageSize] || layouts[24];
         return { columns, rows };
+      }
+
+      function applyCardFrameForLayout(layout) {
+        const gridStyle = getComputedStyle(ui.grid);
+        const rowGap = Number.parseFloat(gridStyle.rowGap) || 0;
+        const usableHeight = Math.max(1, ui.grid.clientHeight - rowGap * (layout.rows - 1));
+        const rowHeight = usableHeight / layout.rows;
+
+        // 12商品（6列×2段）で最も自然に見える商品枠の比率を全レイアウトへ適用。
+        // 商品枠の中では画像を横3:縦4のまま表示し、価格欄の高さも確保する。
+        const referenceCardAspect = 7 / 13;
+        const frameWidth = Math.max(1, rowHeight * referenceCardAspect);
+        document.documentElement.style.setProperty("--card-frame-width", frameWidth.toFixed(2) + "px");
       }
 
       function render() {`);
@@ -83,18 +96,22 @@
 
         replaceRequired(
           "        document.documentElement.style.setProperty(\"--columns\", String(layout.columns));\n        document.documentElement.style.setProperty(\"--rows\", String(layout.rows));",
-          "        document.documentElement.style.setProperty(\"--columns\", String(layout.columns));\n        document.documentElement.style.setProperty(\"--rows\", String(layout.rows));\n        ui.grid.dataset.pageSize = String(state.settings.pageSize);\n        ui.grid.dataset.layoutColumns = String(layout.columns);\n        ui.grid.dataset.layoutRows = String(layout.rows);",
+          "        document.documentElement.style.setProperty(\"--columns\", String(layout.columns));\n        document.documentElement.style.setProperty(\"--rows\", String(layout.rows));\n        ui.grid.dataset.pageSize = String(state.settings.pageSize);\n        ui.grid.dataset.layoutColumns = String(layout.columns);\n        ui.grid.dataset.layoutRows = String(layout.rows);\n        applyCardFrameForLayout(layout);",
           "画像比率用レイアウト属性"
         );
 
         replaceRequired(
           "        visible.forEach((product, index) => fragment.appendChild(createCard(product, index)));",
-`        visible.forEach((product, index) => {
+`        const lastRowCount = visible.length % layout.columns;
+        const lastRowStart = visible.length - lastRowCount;
+        const emptyLastRowSlots = lastRowCount > 0 ? layout.columns - lastRowCount : 0;
+        visible.forEach((product, index) => {
           const card = createCard(product, index);
-          const lastRowCount = visible.length % layout.columns;
-          const lastRowStart = visible.length - lastRowCount;
           if (lastRowCount > 0 && index === lastRowStart) {
-            card.style.gridColumnStart = String(Math.floor((layout.columns - lastRowCount) / 2) + 1);
+            card.style.gridColumnStart = String(Math.floor(emptyLastRowSlots / 2) + 1);
+          }
+          if (emptyLastRowSlots % 2 === 1 && index >= lastRowStart) {
+            card.classList.add("is-half-column-centered");
           }
           fragment.appendChild(card);
         });`,
