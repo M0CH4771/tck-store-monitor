@@ -1,11 +1,4 @@
-/* 残り1点は赤文字で強調し、商品名表示時にも背景を塗りつぶさない。 */
-.stock.is-last-one {
-  border-color: transparent !important;
-  border-radius: 0 !important;
-  padding: 0 !important;
+/* 在庫1は数字だけを赤くし、背景や追加文言は付けない。 */
+.stock.is-last-one .stock-count {
   color: var(--red, #c8102e) !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  font-weight: 900 !important;
-  white-space: nowrap !important;
 }
