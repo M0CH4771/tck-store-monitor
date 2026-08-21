@@ -9,7 +9,7 @@
   <script>
     (async () => {
       try {
-        const VERSION = "20260821-2000";
+        const VERSION = "20260821-2040";
         const response = await fetch(`base-stable.html?v=${VERSION}`, { cache: "no-store" });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         let html = await response.text();
@@ -133,10 +133,28 @@
         );
 
         replaceRequired(
+          '        card.className = `card${hasSpecial ? " has-special" : ""}`;',
+          '        card.className = `card${hasSpecial ? " has-special" : ""}`;\n        card.dataset.row = String(product.row);',
+          "画像出力用の商品行"
+        );
+
+        replaceRequired(
+          '        label.textContent = labelText;',
+          '        label.textContent = labelText;\n        label.dataset.en = special ? "SPECIAL PRICE" : "REGULAR PRICE";',
+          "価格の英語併記"
+        );
+
+        replaceRequired(
+          '        stockLabel.textContent = "在庫";',
+          '        stockLabel.textContent = "在庫";\n        stockLabel.dataset.en = "STOCK";',
+          "在庫の英語併記"
+        );
+
+        replaceRequired(
 `    <button class="control-button" id="fullscreenButton" type="button" aria-label="全画面表示" title="全画面表示">⛶</button>
     <button class="control-button" id="settingsButton" type="button" aria-label="設定" title="設定">⚙</button>`,
 `    <button class="control-button" id="fullscreenButton" type="button" aria-label="全画面表示" title="全画面表示">⛶</button>
-    <button class="control-button export-image-button" id="exportImageButton" type="button" aria-label="現在の画面をPNG保存" title="現在の画面をPNG保存">PNG</button>
+    <button class="control-button export-image-button" id="exportImageButton" type="button" aria-label="全ページをPNG保存" title="全ページをPNG保存">PNG</button>
     <button class="control-button" id="settingsButton" type="button" aria-label="設定" title="設定">⚙</button>`,
           "PNG保存ボタン"
         );
