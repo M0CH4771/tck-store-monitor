@@ -18,14 +18,22 @@ const MONITOR_SETTINGS = {
 // JSONとJSONPの両方に対応しています。
 // ==================================================
 function doGet(e) {
+  const parameters = e && e.parameter
+    ? e.parameter
+    : {};
   const callback = sanitizeCallback_(
-    e && e.parameter ? e.parameter.callback : ""
+    parameters.callback
   );
 
   let payload;
 
   try {
-    payload = getMonitorPayload_();
+    payload = Object.prototype.hasOwnProperty.call(
+      parameters,
+      "imageRow"
+    )
+      ? getImagePayload_(parameters.imageRow)
+      : getMonitorPayload_();
   } catch (error) {
     console.error(error);
 
@@ -33,12 +41,17 @@ function doGet(e) {
       ok: false,
       error: error && error.message
         ? error.message
-        : "商品データの取得に失敗しました",
+        : "データの取得に失敗しました",
       updatedAt: new Date().toISOString(),
       items: []
     };
   }
 
+  return createWebResponse_(payload, callback);
+}
+
+
+function createWebResponse_(payload, callback) {
   const json = JSON.stringify(payload);
 
   if (callback) {
@@ -56,6 +69,130 @@ function doGet(e) {
     .setMimeType(
       ContentService.MimeType.JSON
     );
+}
+
+
+// ==================================================
+// PNG出力用の画像中継
+// 行番号だけを受け取り、その行のC列に登録された画像を返します。
+// ブラウザから任意のURLを指定できないため、画像中継として安全です。
+// ==================================================
+function getImagePayload_(rowValue) {
+  const row = Number(rowValue);
+
+  if (
+    !Number.isInteger(row) ||
+    row <= MONITOR_SETTINGS.headerRow
+  ) {
+    throw new Error("画像の行番号が正しくありません");
+  }
+
+  const spreadsheet = SpreadsheetApp
+    .getActiveSpreadsheet();
+
+  if (!spreadsheet) {
+    throw new Error(
+      "対象スプレッドシートを取得できませんでした"
+    );
+  }
+
+  const sheet = getTargetSheet_(spreadsheet);
+
+  if (row > sheet.getLastRow()) {
+    throw new Error("指定された商品行が見つかりません");
+  }
+
+  const cell = sheet.getRange(row, 3);
+  const imageUrl = extractImageUrl_(
+    cell.getValue(),
+    cell.getDisplayValue(),
+    cell.getFormula()
+  );
+
+  if (!/^https:\/\//i.test(imageUrl)) {
+    throw new Error(
+      "C列にHTTPSの画像URLが設定されていません"
+    );
+  }
+
+  const response = UrlFetchApp.fetch(imageUrl, {
+    followRedirects: true,
+    muteHttpExceptions: true
+  });
+  const responseCode = response.getResponseCode();
+
+  if (responseCode < 200 || responseCode >= 300) {
+    throw new Error(
+      "画像を取得できませんでした（HTTP " +
+      responseCode +
+      "）"
+    );
+  }
+
+  const blob = response.getBlob();
+  const bytes = blob.getBytes();
+
+  if (!bytes.length) {
+    throw new Error("画像データが空です");
+  }
+
+  if (bytes.length > 8 * 1024 * 1024) {
+    throw new Error(
+      "画像サイズが大きすぎます（上限8MB）"
+    );
+  }
+
+  const mimeType = normalizeImageMime_(
+    blob.getContentType(),
+    imageUrl
+  );
+
+  return {
+    ok: true,
+    row: row,
+    imageData:
+      "data:" +
+      mimeType +
+      ";base64," +
+      Utilities.base64Encode(bytes)
+  };
+}
+
+
+function normalizeImageMime_(contentType, imageUrl) {
+  const normalized = String(
+    contentType || ""
+  ).split(";")[0].trim().toLowerCase();
+
+  if (/^image\/[a-z0-9.+-]+$/.test(normalized)) {
+    return normalized;
+  }
+
+  const cleanUrl = String(imageUrl || "")
+    .split(/[?#]/)[0]
+    .toLowerCase();
+  const extensionTypes = {
+    ".avif": "image/avif",
+    ".gif": "image/gif",
+    ".jpeg": "image/jpeg",
+    ".jpg": "image/jpeg",
+    ".png": "image/png",
+    ".svg": "image/svg+xml",
+    ".webp": "image/webp"
+  };
+  const extensions = Object.keys(extensionTypes);
+
+  for (let index = 0; index < extensions.length; index += 1) {
+    const extension = extensions[index];
+
+    if (cleanUrl.endsWith(extension)) {
+      return extensionTypes[extension];
+    }
+  }
+
+  throw new Error(
+    "取得先が画像データを返しませんでした"
+  );
 }
 
 
