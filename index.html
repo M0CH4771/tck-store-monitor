@@ -9,7 +9,7 @@
   <script>
     (async () => {
       try {
-        const VERSION = "20260821-1450";
+        const VERSION = "20260821-1600";
         const response = await fetch(`base-stable.html?v=${VERSION}`, { cache: "no-store" });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         let html = await response.text();
@@ -29,17 +29,17 @@
 `          <select id="pageSizeInput">
             <option value="1">1商品（1列×1段）</option>
             <option value="2">2商品（2列×1段）</option>
-            <option value="3">3商品（3列×1段）</option>
-            <option value="4">4商品（4列×1段）</option>
-            <option value="6">6商品（6列×1段）</option>
-            <option value="8">8商品（4列×2段）</option>
-            <option value="10">10商品（5列×2段）</option>
-            <option value="12">12商品（6列×2段）</option>
-            <option value="15">15商品（8列×2段・最終段中央）</option>
-            <option value="18">18商品（9列×2段）</option>
-            <option value="20">20商品（7列×3段・最終段中央）</option>
-            <option value="21">21商品（7列×3段）</option>
-            <option value="24">24商品（8列×3段）</option>
+            <option value="3">3商品（2列×2段・最終段中央）</option>
+            <option value="4">4商品（2列×2段）</option>
+            <option value="6">6商品（3列×2段）</option>
+            <option value="8">8商品（3列×3段・最終段中央）</option>
+            <option value="10">10商品（4列×3段・最終段中央）</option>
+            <option value="12">12商品（4列×3段）</option>
+            <option value="15">15商品（4列×4段・最終段中央）</option>
+            <option value="18">18商品（5列×4段・最終段中央）</option>
+            <option value="20">20商品（5列×4段）</option>
+            <option value="21">21商品（5列×5段・最終段中央）</option>
+            <option value="24">24商品（5列×5段・最終段中央）</option>
           </select>`,
           "商品数設定"
         );
@@ -55,19 +55,16 @@
         html = html.replace(layoutPattern,
 `      function layoutForPageSize(pageSize) {
         if (innerWidth < 760) {
-          const effective = Math.min(pageSize, 4);
-          const columns = Math.min(2, Math.max(1, effective));
-          return { columns, rows: Math.max(1, Math.ceil(effective / columns)) };
+          return { columns: 1, rows: Math.max(1, pageSize) };
         }
         if (innerWidth < 1180) {
-          const effective = Math.min(pageSize, 8);
-          const columns = Math.min(4, Math.max(1, effective));
-          return { columns, rows: Math.max(1, Math.ceil(effective / columns)) };
+          const columns = pageSize === 1 ? 1 : 2;
+          return { columns, rows: Math.max(1, Math.ceil(pageSize / columns)) };
         }
         const layouts = {
-          1: [1, 1], 2: [2, 1], 3: [3, 1], 4: [4, 1],
-          6: [6, 1], 8: [4, 2], 10: [5, 2], 12: [6, 2],
-          15: [8, 2], 18: [9, 2], 20: [7, 3], 21: [7, 3], 24: [8, 3]
+          1: [1, 1], 2: [2, 1], 3: [2, 2], 4: [2, 2],
+          6: [3, 2], 8: [3, 3], 10: [4, 3], 12: [4, 3],
+          15: [4, 4], 18: [5, 4], 20: [5, 4], 21: [5, 5], 24: [5, 5]
         };
         const [columns, rows] = layouts[pageSize] || layouts[24];
         return { columns, rows };
@@ -81,33 +78,25 @@
         const usableHeight = Math.max(1, ui.grid.clientHeight - rowGap * (layout.rows - 1));
         const columnWidth = usableWidth / layout.columns;
         const rowHeight = usableHeight / layout.rows;
-        const cards = Array.from(ui.grid.querySelectorAll(".card"));
-        const pricePanelHeight = Math.max(0, ...cards.map(card => {
-          const panel = card.querySelector(".price-grid");
-          return panel ? panel.getBoundingClientRect().height : 0;
-        }));
-        const nameHeight = state.settings.showProductName
-          ? Math.max(0, ...cards.map(card => {
-              const name = card.querySelector(".card-name");
-              return name ? name.getBoundingClientRect().height : 0;
-            }))
-          : 0;
-
-        // 画像枠の左右余白10pxと、基準レイアウトにある上下余白約28pxを含める。
-        // 1・2段は3:4画像から必要高を逆算。3段は価格幅を優先して基準比率を使う。
-        const fixedContentHeight = pricePanelHeight + nameHeight + 28;
-        let frameWidth;
-        let frameHeight;
-        if (layout.rows <= 2) {
-          const heightLimitedWidth = Math.max(1, (rowHeight - fixedContentHeight) * 3 / 4 + 10);
-          frameWidth = Math.min(columnWidth, heightLimitedWidth);
-          frameHeight = Math.min(rowHeight, Math.max(1, (frameWidth - 10) * 4 / 3 + fixedContentHeight));
-        } else {
-          frameWidth = Math.min(columnWidth, rowHeight * 7 / 13);
-          frameHeight = rowHeight;
-        }
+        const frameWidth = columnWidth;
+        const frameHeight = rowHeight;
+        const imageScale = Math.max(.6, Math.min(1.4, state.settings.imageScale / 100));
+        const naturalImageColumn = rowHeight * .75 + 8;
+        const minimumInfoWidth = Math.min(230, Math.max(150, frameWidth * .46));
+        const maximumImageColumn = Math.max(72, frameWidth - minimumInfoWidth);
+        const imageColumn = Math.min(naturalImageColumn, naturalImageColumn * imageScale, maximumImageColumn);
+        const infoWidth = Math.max(1, frameWidth - imageColumn);
+        const priceCap = Math.max(20, Math.min(rowHeight * .24, infoWidth / 4.4));
+        const stockCap = Math.max(14, Math.min(rowHeight * .18, infoWidth * .17));
+        const labelCap = Math.max(10, Math.min(rowHeight * .11, infoWidth * .1));
+        const nameCap = Math.max(11, Math.min(rowHeight * .12, infoWidth * .1));
         document.documentElement.style.setProperty("--card-frame-width", frameWidth.toFixed(2) + "px");
         document.documentElement.style.setProperty("--card-frame-height", frameHeight.toFixed(2) + "px");
+        document.documentElement.style.setProperty("--card-image-column", imageColumn.toFixed(2) + "px");
+        document.documentElement.style.setProperty("--card-price-cap", priceCap.toFixed(2) + "px");
+        document.documentElement.style.setProperty("--card-stock-cap", stockCap.toFixed(2) + "px");
+        document.documentElement.style.setProperty("--card-label-cap", labelCap.toFixed(2) + "px");
+        document.documentElement.style.setProperty("--card-name-cap", nameCap.toFixed(2) + "px");
       }
 
       function render() {`);

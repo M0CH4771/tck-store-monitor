@@ -1,85 +1,143 @@
-/* 2026-08-21: 6列×2段基準の縦型カード + BOX向け3:4画像フレーム */
-.grid { grid-auto-flow: row !important; }
+/* 2026-08-21: 横型カード。左に3:4画像、右に通常価格・状態特価を縦2段で固定 */
+.grid {
+  grid-auto-flow: row !important;
+}
+
 .card,
 .grid.is-name-hidden .card {
-  grid-template-columns: minmax(0, 1fr) !important;
-  grid-template-rows: minmax(0, 1fr) auto auto !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, var(--card-image-column, 42%)) minmax(0, 1fr) !important;
+  grid-template-rows: auto minmax(0, 1fr) !important;
+  align-items: stretch !important;
+  column-gap: 0 !important;
 }
-.grid.is-name-hidden .card { grid-template-rows: minmax(0, 1fr) auto !important; }
+
+.grid.is-name-hidden .card {
+  grid-template-rows: minmax(0, 1fr) !important;
+}
+
 .image-wrap,
 .grid.is-name-hidden .image-wrap {
   grid-column: 1 !important;
-  grid-row: 1 !important;
+  grid-row: 1 / 3 !important;
+  place-self: center !important;
+  width: calc(100% - 8px) !important;
+  height: auto !important;
+  max-width: calc(100% - 8px) !important;
+  max-height: calc(100% - 8px) !important;
   min-width: 0;
   min-height: 0;
-  margin: 4px 4px 3px !important;
+  aspect-ratio: 3 / 4 !important;
+  margin: 4px !important;
   padding: 2px !important;
 }
-.card-image { object-fit: contain !important; object-position: center !important; }
-.card-name {
-  grid-column: 1 !important;
-  grid-row: 2 !important;
-  align-self: auto;
-  padding: 2px 7px 3px;
-  line-height: 1.15;
-  -webkit-line-clamp: 1;
+
+.grid.is-name-hidden .image-wrap {
+  grid-row: 1 !important;
 }
-.grid.is-name-hidden .card-name { display: none !important; }
+
+.card-image {
+  object-fit: contain !important;
+  object-position: center !important;
+}
+
+.card-name {
+  display: block !important;
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  align-self: center !important;
+  min-width: 0;
+  margin: 0 !important;
+  overflow: hidden;
+  padding: 3px 8px 2px !important;
+  font-size: min(var(--name-font-size), var(--card-name-cap, 999px)) !important;
+  line-height: 1.08 !important;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.grid.is-name-hidden .card-name {
+  display: none !important;
+}
+
 .price-grid,
 .grid.is-name-hidden .price-grid {
-  grid-column: 1 !important;
-  grid-row: 3 !important;
+  grid-column: 2 !important;
+  grid-row: 2 !important;
   display: grid !important;
-  grid-template-rows: none !important;
-  grid-auto-rows: auto;
+  grid-template-rows: repeat(2, minmax(0, 1fr)) !important;
   min-width: 0;
   min-height: 0;
-  gap: 2px !important;
-  padding: 0 4px 4px !important;
+  gap: 3px !important;
+  padding: 3px 4px 4px 0 !important;
 }
-.grid.is-name-hidden .price-grid { grid-row: 2 !important; }
-.price-box.is-unavailable { display: none !important; }
-.price-grid:has(.price-box.is-unavailable) { grid-template-rows: none !important; }
+
+.grid.is-name-hidden .price-grid {
+  grid-row: 1 !important;
+}
+
+.price-box.is-unavailable {
+  display: none !important;
+}
+
+.price-grid:has(> .price-box.is-unavailable) {
+  grid-template-rows: minmax(0, 1fr) !important;
+}
+
 .price-box,
 .grid.is-name-hidden .price-box {
+  position: relative;
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) auto !important;
-  grid-template-rows: auto auto !important;
-  align-items: baseline !important;
+  grid-template-rows: auto minmax(0, 1fr) !important;
+  align-items: center !important;
   min-width: 0;
   min-height: 0 !important;
+  overflow: hidden;
   margin: 0 !important;
   padding: 3px 7px 4px !important;
-  gap: 1px 8px !important;
-  border-left-width: 4px !important;
+  gap: 1px 6px !important;
+  border-left-width: 5px !important;
+  border-radius: 6px !important;
 }
+
 .price-label,
 .grid.is-name-hidden .price-label {
   grid-column: 1 / 3 !important;
   grid-row: 1 !important;
-  width: auto;
+  width: auto !important;
+  min-width: 0;
   padding: 0 !important;
-  font-size: var(--label-font-size) !important;
-  line-height: 1.05 !important;
+  overflow: visible;
+  font-size: min(var(--label-font-size), var(--card-label-cap, 999px)) !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
   letter-spacing: 0 !important;
   white-space: nowrap;
 }
+
 .price,
 .grid.is-name-hidden .price {
   grid-column: 1 !important;
   grid-row: 2 !important;
-  align-self: baseline !important;
+  align-self: center !important;
   min-width: 0;
   overflow: hidden;
+  color: var(--text) !important;
+  font-size: min(var(--price-font-size), var(--card-price-cap, 999px)) !important;
+  font-weight: 950 !important;
+  line-height: 1 !important;
+  letter-spacing: -.035em !important;
   text-align: left !important;
-  font-size: var(--price-font-size) !important;
-  line-height: 1.05 !important;
-  letter-spacing: -.025em !important;
-  text-overflow: ellipsis;
+  text-overflow: clip;
   white-space: nowrap;
 }
+
 .price.is-long,
-.grid.is-name-hidden .price.is-long { font-size: var(--price-long-font-size) !important; }
+.grid.is-name-hidden .price.is-long {
+  font-size: min(var(--price-long-font-size), var(--card-price-cap, 999px)) !important;
+}
+
 .stock,
 .grid.is-name-hidden .stock,
 .special .stock {
@@ -94,19 +152,37 @@
   width: auto !important;
   height: auto !important;
   padding: 0 !important;
+  gap: 3px;
   border-radius: 0 !important;
   color: #27313a !important;
   background: transparent !important;
   box-shadow: none !important;
   white-space: nowrap;
 }
-.stock-label { display: none; }
+
+.stock-label,
+.grid.is-name-hidden .stock-label {
+  display: inline !important;
+  color: #59636d;
+  font-size: min(var(--stock-label-font-size), var(--card-label-cap, 999px)) !important;
+  font-weight: 850 !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+}
+
 .stock-count,
 .grid.is-name-hidden .stock-count {
-  font-size: calc(var(--stock-font-size) * .72) !important;
-  font-weight: 850;
-  line-height: 1;
+  color: #27313a;
+  font-size: min(calc(var(--stock-font-size) * .72), var(--card-stock-cap, 999px)) !important;
+  font-weight: 950 !important;
+  line-height: 1 !important;
 }
+
+.price-box.special .stock-label,
+.price-box.special .stock-count {
+  color: #4d3d00;
+}
+
 .grid .price-box .stock.is-last-one,
 .grid.is-name-hidden .price-box .stock.is-last-one,
 .price-box.special .stock.is-last-one {
@@ -125,18 +201,36 @@
   gap: 0 !important;
   color: var(--red) !important;
 }
-.stock.is-last-one .stock-label {
-  display: block;
-  color: var(--red);
-  font-size: max(8px, min(calc(var(--stock-font-size) * .42), calc(var(--price-font-size) * .30))) !important;
-  font-weight: 900;
-  line-height: .9;
+
+.stock.is-last-one .stock-label,
+.price-box.special .stock.is-last-one .stock-label {
+  display: block !important;
+  color: var(--red) !important;
+  font-size: max(
+    8px,
+    min(
+      calc(var(--stock-font-size) * .42),
+      calc(var(--card-stock-cap, 999px) * .55),
+      calc(var(--card-price-cap, 999px) * .30)
+    )
+  ) !important;
+  font-weight: 950 !important;
+  line-height: .9 !important;
 }
-.stock.is-last-one .stock-count {
-  color: var(--red);
-  font-size: max(13px, min(calc(var(--stock-font-size) * .66), calc(var(--price-font-size) * .58))) !important;
-  font-weight: 950;
-  line-height: .9;
+
+.stock.is-last-one .stock-count,
+.price-box.special .stock.is-last-one .stock-count {
+  color: var(--red) !important;
+  font-size: max(
+    13px,
+    min(
+      calc(var(--stock-font-size) * .66),
+      var(--card-stock-cap, 999px),
+      calc(var(--card-price-cap, 999px) * .58)
+    )
+  ) !important;
+  font-weight: 1000 !important;
+  line-height: .9 !important;
 }
 
 @media (min-width: 1180px) {
@@ -145,39 +239,20 @@
     place-self: center !important;
     width: min(100%, var(--card-frame-width, 100%)) !important;
     height: min(100%, var(--card-frame-height, 100%)) !important;
+    max-width: 100% !important;
     max-height: 100% !important;
     min-height: 0;
   }
-  .card.is-half-column-centered { left: 50%; }
-  .price-box { max-height: 58px; }
-  .grid[data-layout-columns="7"] .price-box,
-  .grid[data-layout-columns="8"] .price-box,
-  .grid[data-layout-columns="9"] .price-box {
-    padding-right: 5px !important;
-    padding-left: 5px !important;
-    column-gap: 4px !important;
-  }
 
-  /*
-   * BOX画像は横3:縦4の枠へ収める。
-   * 3段表示は高さ基準、1・2段表示は横幅基準で3:4を維持する。
-   */
-  .image-wrap,
-  .grid.is-name-hidden .image-wrap {
-    place-self: center !important;
-    width: auto !important;
-    height: calc(100% - 2px) !important;
-    max-width: calc(100% - 8px) !important;
-    margin: 1px auto !important;
-    aspect-ratio: 3 / 4 !important;
+  .card.is-half-column-centered {
+    left: 50%;
   }
+}
 
-  .grid[data-layout-rows="1"] .image-wrap,
-  .grid[data-layout-rows="2"] .image-wrap,
-  .grid.is-name-hidden[data-layout-rows="1"] .image-wrap,
-  .grid.is-name-hidden[data-layout-rows="2"] .image-wrap {
-    width: calc(100% - 8px) !important;
-    height: auto !important;
-    max-height: calc(100% - 4px) !important;
+@media (max-width: 1179px) {
+  .card,
+  .grid.is-name-hidden .card {
+    width: 100% !important;
+    height: 100% !important;
   }
 }
