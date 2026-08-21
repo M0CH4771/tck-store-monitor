@@ -183,16 +183,17 @@
 .special .stock {
   grid-column: 2 !important;
   grid-row: 2 !important;
-  display: flex !important;
-  place-items: initial !important;
-  align-items: baseline !important;
-  justify-content: flex-end !important;
-  align-content: initial !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  grid-template-rows: auto auto !important;
+  place-items: center !important;
+  align-self: center !important;
+  justify-self: end !important;
   min-width: 0 !important;
   width: auto !important;
   height: auto !important;
   padding: 0 !important;
-  gap: 3px;
+  gap: 0 !important;
   border-radius: 0 !important;
   color: #27313a !important;
   background: transparent !important;
@@ -202,32 +203,23 @@
 
 .stock-label,
 .grid.is-name-hidden .stock-label {
-  display: inline-grid !important;
-  justify-items: end;
+  display: block !important;
   color: #59636d;
   font-size: min(var(--stock-label-font-size), var(--card-label-cap, 999px)) !important;
   font-weight: 850 !important;
-  line-height: 1 !important;
-  letter-spacing: 0 !important;
-}
-
-.stock-label::after,
-.grid.is-name-hidden .stock-label::after {
-  content: attr(data-en);
-  display: block;
-  margin-top: 1px;
-  font-size: max(6px, .68em);
-  font-weight: 850;
-  line-height: .85;
-  letter-spacing: .06em;
+  line-height: .9 !important;
+  letter-spacing: .045em !important;
+  text-align: center;
 }
 
 .stock-count,
 .grid.is-name-hidden .stock-count {
+  display: block;
   color: #27313a;
   font-size: min(var(--stock-font-size), var(--card-stock-cap, 999px)) !important;
   font-weight: 950 !important;
-  line-height: 1 !important;
+  line-height: .92 !important;
+  text-align: center;
 }
 
 .price-box.special .stock-label,
@@ -235,71 +227,10 @@
   color: #4d3d00;
 }
 
-.grid .price-box .stock.is-last-one,
-.grid.is-name-hidden .price-box .stock.is-last-one,
-.price-box.special .stock.is-last-one {
-  display: grid !important;
-  grid-template-columns: minmax(0, 1fr) !important;
-  grid-template-rows: auto auto !important;
-  place-items: center !important;
-  align-self: center !important;
-  align-items: center !important;
-  justify-content: center !important;
-  align-content: center !important;
-  width: auto !important;
-  height: auto !important;
-  max-height: 100% !important;
-  overflow: hidden !important;
-  gap: 0 !important;
-  color: var(--red) !important;
-  border-color: transparent !important;
-  border-radius: 0 !important;
-  padding: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-}
-
-.stock.is-last-one .stock-label,
-.price-box.special .stock.is-last-one .stock-label {
-  display: flex !important;
-  align-items: baseline;
-  gap: 2px;
-  color: var(--red) !important;
-  font-size: max(
-    8px,
-    min(
-      calc(var(--stock-font-size) * .42),
-      calc(var(--card-stock-cap, 999px) * .50),
-      calc(var(--card-price-cap, 999px) * .30)
-    )
-  ) !important;
-  font-weight: 950 !important;
-  line-height: .9 !important;
-}
-
-.stock.is-last-one .stock-label::after,
-.price-box.special .stock.is-last-one .stock-label::after {
-  content: "ONLY";
-  display: inline;
-  margin: 0;
-  font-size: max(6px, .66em);
-  line-height: 1;
-  letter-spacing: .04em;
-}
-
 .stock.is-last-one .stock-count,
 .price-box.special .stock.is-last-one .stock-count {
   color: var(--red) !important;
-  font-size: max(
-    13px,
-    min(
-      calc(var(--stock-font-size) * .90),
-      var(--card-stock-cap, 999px),
-      calc(var(--card-price-cap, 999px) * .70)
-    )
-  ) !important;
   font-weight: 1000 !important;
-  line-height: .9 !important;
 }
 
 @media (min-width: 1180px) {
