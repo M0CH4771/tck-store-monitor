@@ -1,4 +1,4 @@
-/* 2026-08-21: 縦型カード + BOX向け3:4画像フレーム */
+/* 2026-08-21: 6列×2段基準の縦型カード + BOX向け3:4画像フレーム */
 .grid { grid-auto-flow: row !important; }
 .card,
 .grid.is-name-hidden .card {
@@ -107,30 +107,54 @@
   font-weight: 850;
   line-height: 1;
 }
-.stock.is-last-one {
-  flex-direction: column !important;
+.grid .price-box .stock.is-last-one,
+.grid.is-name-hidden .price-box .stock.is-last-one,
+.price-box.special .stock.is-last-one {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  grid-template-rows: auto auto !important;
+  place-items: center !important;
+  align-self: center !important;
   align-items: center !important;
   justify-content: center !important;
+  align-content: center !important;
+  width: auto !important;
+  height: auto !important;
+  max-height: 100% !important;
+  overflow: hidden !important;
   gap: 0 !important;
   color: var(--red) !important;
 }
 .stock.is-last-one .stock-label {
   display: block;
   color: var(--red);
-  font-size: calc(var(--stock-font-size) * .55) !important;
+  font-size: max(8px, min(calc(var(--stock-font-size) * .42), calc(var(--price-font-size) * .30))) !important;
   font-weight: 900;
-  line-height: 1;
+  line-height: .9;
 }
-.stock.is-last-one .stock-count { color: var(--red); font-weight: 950; }
+.stock.is-last-one .stock-count {
+  color: var(--red);
+  font-size: max(13px, min(calc(var(--stock-font-size) * .66), calc(var(--price-font-size) * .58))) !important;
+  font-weight: 950;
+  line-height: .9;
+}
 
 @media (min-width: 1180px) {
-  .card { min-height: 0; }
+  .card,
+  .grid.is-name-hidden .card {
+    place-self: center !important;
+    width: min(100%, var(--card-frame-width, 100%)) !important;
+    height: auto !important;
+    max-height: 100% !important;
+    min-height: 0;
+    aspect-ratio: 7 / 13;
+  }
+  .card.is-half-column-centered { left: 50%; }
   .price-box { max-height: 58px; }
 
   /*
    * BOX画像は横3:縦4の枠へ収める。
-   * 通常は価格欄を除いた残りの高さを基準にし、横幅が先に不足する
-   * 3・4・12商品レイアウトだけは横幅を基準にして枠内へ収める。
+   * 3段表示は高さ基準、1・2段表示は横幅基準で3:4を維持する。
    */
   .image-wrap,
   .grid.is-name-hidden .image-wrap {
@@ -142,9 +166,10 @@
     aspect-ratio: 3 / 4 !important;
   }
 
-  .grid[data-page-size="3"] .image-wrap,
-  .grid[data-page-size="4"] .image-wrap,
-  .grid[data-page-size="12"] .image-wrap {
+  .grid[data-layout-rows="1"] .image-wrap,
+  .grid[data-layout-rows="2"] .image-wrap,
+  .grid.is-name-hidden[data-layout-rows="1"] .image-wrap,
+  .grid.is-name-hidden[data-layout-rows="2"] .image-wrap {
     width: calc(100% - 8px) !important;
     height: auto !important;
     max-height: calc(100% - 4px) !important;
