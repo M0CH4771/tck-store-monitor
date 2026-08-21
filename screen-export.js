@@ -344,8 +344,16 @@
   }
 
   function drawPreparedImages(canvas, target) {
-    const context = canvas.getContext("2d");
-    if (!context) throw new Error("商品画像をPNGへ描画できませんでした");
+    const finalContext = canvas.getContext("2d");
+    if (!finalContext) throw new Error("商品画像をPNGへ描画できませんでした");
+
+    // html2canvasが残した拡大・移動状態の影響を受けないように、
+    // 等倍の透明Canvasへ商品画像だけ描いてから完成画像へ重ねる。
+    const overlay = document.createElement("canvas");
+    overlay.width = canvas.width;
+    overlay.height = canvas.height;
+    const context = overlay.getContext("2d");
+    if (!context) throw new Error("商品画像用Canvasを作成できませんでした");
 
     const targetRect = target.getBoundingClientRect();
     const scaleX = canvas.width / Math.max(1, target.clientWidth);
@@ -407,6 +415,11 @@
         `商品画像をPNGへ描画できませんでした（${drawnImages}/${images.length}枚）`
       );
     }
+
+    finalContext.save();
+    finalContext.setTransform(1, 0, 0, 1, 0, 0);
+    finalContext.drawImage(overlay, 0, 0);
+    finalContext.restore();
 
     return drawnImages;
   }
