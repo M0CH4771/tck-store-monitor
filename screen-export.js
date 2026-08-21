@@ -3,7 +3,7 @@
 
   const SETTINGS_KEY = "tck-store-monitor-settings-v1";
   const EXPORT_IMAGE_CONCURRENCY = 3;
-  const WARMUP_IMAGE_CONCURRENCY = 2;
+  const WARMUP_IMAGE_CONCURRENCY = 3;
   const button = document.getElementById("exportImageButton");
   if (!button) return;
 
