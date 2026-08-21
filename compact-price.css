@@ -141,7 +141,10 @@
 
 .price.is-long,
 .grid.is-name-hidden .price.is-long {
-  font-size: min(var(--price-long-font-size), var(--card-price-cap, 999px)) !important;
+  font-size: min(
+    var(--price-long-font-size),
+    calc(var(--card-price-cap, 999px) * .90)
+  ) !important;
 }
 
 .stock,
