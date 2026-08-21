@@ -9,7 +9,7 @@
   <script>
     (async () => {
       try {
-        const VERSION = "20260821-2350";
+        const VERSION = "20260821-2400";
         const response = await fetch(`base-stable.html?v=${VERSION}`, { cache: "no-store" });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         let html = await response.text();
@@ -140,7 +140,7 @@
 
         replaceRequired(
           '        label.textContent = labelText;',
-          '        label.textContent = labelText;\n        label.dataset.en = special ? "SPECIAL PRICE" : "REGULAR PRICE";',
+          '        label.textContent = labelText;\n        label.dataset.en = special ? "CONDITION DISCOUNT" : "REGULAR PRICE";',
           "価格の英語併記"
         );
 
@@ -154,6 +154,12 @@
           '        stockCountText.textContent = `${formatStock(stockCount)}点`;',
           '        stockCountText.textContent = formatStock(stockCount);',
           "在庫数の省スペース表示"
+        );
+
+        replaceRequired(
+          '<div class="footer-note">在庫・価格は変動します。最新状況はスタッフまでお尋ねください。</div>',
+          '<div class="footer-note"><span>在庫・価格は変動します。最新状況はスタッフまでお尋ねください。</span><span class="footer-note-en">Prices and stock may change. Please ask our staff for the latest availability.</span></div>',
+          "下部注意書きの英語併記"
         );
 
         replaceRequired(
