@@ -9,7 +9,7 @@
   <script>
     (async () => {
       try {
-        const VERSION = "20260821-2040";
+        const VERSION = "20260821-2200";
         const response = await fetch(`base-stable.html?v=${VERSION}`, { cache: "no-store" });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         let html = await response.text();
@@ -146,8 +146,14 @@
 
         replaceRequired(
           '        stockLabel.textContent = "在庫";',
-          '        stockLabel.textContent = "在庫";\n        stockLabel.dataset.en = "STOCK";',
-          "在庫の英語併記"
+          '        stockLabel.textContent = "STOCK";',
+          "省スペース在庫表記"
+        );
+
+        replaceRequired(
+          '        stockCountText.textContent = `${formatStock(stockCount)}点`;',
+          '        stockCountText.textContent = formatStock(stockCount);',
+          "在庫数の省スペース表示"
         );
 
         replaceRequired(

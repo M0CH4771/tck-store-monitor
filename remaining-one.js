@@ -5,13 +5,11 @@
     const stocks = root.querySelectorAll ? root.querySelectorAll(".stock") : [];
     stocks.forEach(stock => {
       if (stock.dataset.tckLastOneChecked === "1") return;
-      const label = stock.querySelector(".stock-label");
       const count = stock.querySelector(".stock-count");
       if (!count) return;
 
-      if (count.textContent.replace(/\s/g, "") === "1点") {
+      if (count.textContent.replace(/\s/g, "") === "1") {
         stock.classList.add("is-last-one");
-        if (label) label.textContent = "残り";
       }
 
       stock.dataset.tckLastOneChecked = "1";
