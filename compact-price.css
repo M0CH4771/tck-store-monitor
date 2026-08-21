@@ -143,7 +143,7 @@
   display: block;
   margin-top: 1px;
   color: #59636d;
-  font-size: .48em;
+  font-size: max(7px, .58em);
   font-weight: 850;
   line-height: .9;
   letter-spacing: .075em;
@@ -216,7 +216,7 @@
   content: attr(data-en);
   display: block;
   margin-top: 1px;
-  font-size: .52em;
+  font-size: max(6px, .68em);
   font-weight: 850;
   line-height: .85;
   letter-spacing: .06em;
@@ -282,7 +282,7 @@
   content: "ONLY";
   display: inline;
   margin: 0;
-  font-size: .56em;
+  font-size: max(6px, .66em);
   line-height: 1;
   letter-spacing: .04em;
 }
