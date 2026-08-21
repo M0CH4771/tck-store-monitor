@@ -9,7 +9,7 @@
   <script>
     (async () => {
       try {
-        const VERSION = "20260821-1650";
+        const VERSION = "20260821-1915";
         const response = await fetch(`base-stable.html?v=${VERSION}`, { cache: "no-store" });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         let html = await response.text();
@@ -35,7 +35,7 @@
             <option value="8">8商品（3列×3段・最終段中央）</option>
             <option value="10">10商品（3列×4段・最終段中央）</option>
             <option value="12">12商品（3列×4段）</option>
-            <option value="15">15商品（4列×4段・最終段中央）</option>
+            <option value="16">16商品（4列×4段）</option>
             <option value="18">18商品（4列×5段・最終段中央）</option>
             <option value="20">20商品（4列×5段）</option>
             <option value="21">21商品（4列×6段・最終段中央）</option>
@@ -46,8 +46,14 @@
 
         replaceRequired(
           "      const CURRENT_SETTINGS_VERSION = 6;\n      const PAGE_SIZE_OPTIONS = [6, 12, 18, 24];",
-          "      const CURRENT_SETTINGS_VERSION = 7;\n      const PAGE_SIZE_OPTIONS = [1, 2, 3, 4, 6, 8, 10, 12, 15, 18, 20, 21, 24];",
+          "      const CURRENT_SETTINGS_VERSION = 8;\n      const PAGE_SIZE_OPTIONS = [1, 2, 3, 4, 6, 8, 10, 12, 16, 18, 20, 21, 24];",
           "設定バージョン"
+        );
+
+        replaceRequired(
+          "        if (!PAGE_SIZE_OPTIONS.includes(normalized.pageSize)) normalized.pageSize = DEFAULT_SETTINGS.pageSize;",
+          "        // 旧版の15商品設定は、整った4列×4段の16商品表示へ自動移行する。\n        if (normalized.pageSize === 15) normalized.pageSize = 16;\n        if (!PAGE_SIZE_OPTIONS.includes(normalized.pageSize)) normalized.pageSize = DEFAULT_SETTINGS.pageSize;",
+          "15商品設定の移行"
         );
 
         const layoutPattern = /      function layoutForItemCount\(count\) \{[\s\S]*?      \}\n\n      function render\(\) \{/;
@@ -64,7 +70,7 @@
         const layouts = {
           1: [1, 1], 2: [2, 1], 3: [2, 2], 4: [2, 2],
           6: [3, 2], 8: [3, 3], 10: [3, 4], 12: [3, 4],
-          15: [4, 4], 18: [4, 5], 20: [4, 5], 21: [4, 6], 24: [4, 6]
+          16: [4, 4], 18: [4, 5], 20: [4, 5], 21: [4, 6], 24: [4, 6]
         };
         const [columns, rows] = layouts[pageSize] || layouts[24];
         return { columns, rows };
@@ -138,12 +144,29 @@
           "商品枠の実寸調整"
         );
 
+        replaceRequired(
+          "        price.textContent = available ? formatPrice(value, displayText) : \"—\";",
+          "        price.textContent = formatPrice(value, displayText);",
+          "在庫0価格の表示"
+        );
+
+        replaceRequired(
+`    <button class="control-button" id="fullscreenButton" type="button" aria-label="全画面表示" title="全画面表示">⛶</button>
+    <button class="control-button" id="settingsButton" type="button" aria-label="設定" title="設定">⚙</button>`,
+`    <button class="control-button" id="fullscreenButton" type="button" aria-label="全画面表示" title="全画面表示">⛶</button>
+    <button class="control-button export-image-button" id="exportImageButton" type="button" aria-label="現在の画面をPNG保存" title="現在の画面をPNG保存">PNG</button>
+    <button class="control-button" id="settingsButton" type="button" aria-label="設定" title="設定">⚙</button>`,
+          "PNG保存ボタン"
+        );
+
         html = html.replace(
           "</head>",
           `<link rel="stylesheet" href="hide-zero-stock.css?v=${VERSION}"><link rel="stylesheet" href="remaining-one.css?v=${VERSION}"><link rel="stylesheet" href="compact-price.css?v=${VERSION}"></head>`
         );
         const remainingOneScript = `<script src="remaining-one.js?v=${VERSION}"></` + `script>`;
-        html = html.replace("</body>", `${remainingOneScript}</body>`);
+        const html2CanvasScript = `<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></` + `script>`;
+        const screenExportScript = `<script src="screen-export.js?v=${VERSION}"></` + `script>`;
+        html = html.replace("</body>", `${remainingOneScript}${html2CanvasScript}${screenExportScript}</body>`);
 
         document.open();
         document.write(html);
