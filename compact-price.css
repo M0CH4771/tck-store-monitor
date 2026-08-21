@@ -107,9 +107,15 @@
   font-weight: 850;
   line-height: 1;
 }
-.stock.is-last-one { gap: 2px; color: var(--red) !important; }
+.stock.is-last-one {
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0 !important;
+  color: var(--red) !important;
+}
 .stock.is-last-one .stock-label {
-  display: inline;
+  display: block;
   color: var(--red);
   font-size: calc(var(--stock-font-size) * .55) !important;
   font-weight: 900;
