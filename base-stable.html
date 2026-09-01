@@ -1821,12 +1821,22 @@
             imageUrl: normalizeImageUrl(String(item.imageUrl || "").trim()),
             normalPrice: finiteOrNull(item.normalPrice),
             normalPriceText: String(item.normalPriceText ?? item.normalPrice ?? "").trim(),
-            normalStock: Math.max(0, toNumber(item.normalStock)),
+            normalStock: normalizeStock(item.normalStock),
             specialPrice: finiteOrNull(item.specialPrice),
             specialPriceText: String(item.specialPriceText ?? item.specialPrice ?? "").trim(),
-            specialStock: Math.max(0, toNumber(item.specialStock))
+            specialStock: normalizeStock(item.specialStock)
           }))
-          .filter(item => item.name && (item.normalStock >= 1 || item.specialStock >= 1));
+          .filter(item => item.name && (hasStock(item.normalStock) || hasStock(item.specialStock)));
+      }
+
+      function normalizeStock(value) {
+        const text = String(value ?? "").trim();
+        if (text.toUpperCase() === "ASK") return "ASK";
+        return Math.max(0, toNumber(value));
+      }
+
+      function hasStock(value) {
+        return value === "ASK" || (typeof value === "number" && value >= 1);
       }
 
       function finiteOrNull(value) {
@@ -2012,7 +2022,7 @@
         if (!state.products.length) {
           document.documentElement.style.setProperty("--columns", "2");
           document.documentElement.style.setProperty("--rows", "10");
-          showEmpty("現在表示できる商品がありません", "通常在庫または特価在庫が1以上の商品が登録されると自動で表示されます。");
+          showEmpty("現在表示できる商品がありません", "通常在庫または特価在庫が1以上、またはASKの商品が登録されると自動で表示されます。");
           renderPagination();
           resetSlideClock();
           return;
@@ -2034,8 +2044,8 @@
       }
 
       function createCard(product, index) {
-        const hasNormal = product.normalStock >= 1;
-        const hasSpecial = product.specialStock >= 1;
+        const hasNormal = hasStock(product.normalStock);
+        const hasSpecial = hasStock(product.specialStock);
         const card = document.createElement("article");
         card.className = `card${hasSpecial ? " has-special" : ""}`;
         card.style.animationDelay = `${Math.min(index * 38, 250)}ms`;
@@ -2093,6 +2103,7 @@
       }
 
       function formatStock(value) {
+        if (value === "ASK") return "ASK";
         return Number.isInteger(value) ? String(value) : String(Math.floor(value * 100) / 100);
       }
 

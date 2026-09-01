@@ -207,7 +207,7 @@ function normalizeImageMime_(contentType, imageUrl) {
 // ==================================================
 function getMonitorPayload_() {
   const cache = CacheService.getScriptCache();
-  const cacheKey = "store-monitor-payload-v1";
+  const cacheKey = "store-monitor-payload-v2";
   const cached = cache.get(cacheKey);
 
   if (cached) {
@@ -253,12 +253,12 @@ function getMonitorPayload_() {
       display[0] || raw[0] || ""
     ).trim();
 
-    const normalStock = toNumber_(raw[5]);
-    const specialStock = toNumber_(raw[7]);
+    const normalStock = toStockValue_(raw[5], display[5]);
+    const specialStock = toStockValue_(raw[7], display[7]);
 
     if (
       !name ||
-      (normalStock < 1 && specialStock < 1)
+      (!hasStock_(normalStock) && !hasStock_(specialStock))
     ) {
       continue;
     }
@@ -348,6 +348,34 @@ function sanitizeCallback_(value) {
   )
     ? callback
     : "";
+}
+
+
+function toStockValue_(rawValue, displayValue) {
+  const text = String(
+    displayValue !== "" && displayValue != null
+      ? displayValue
+      : rawValue || ""
+  ).trim();
+
+  if (text.toUpperCase() === "ASK") {
+    return "ASK";
+  }
+
+  const numericSource =
+    rawValue !== "" && rawValue != null
+      ? rawValue
+      : text;
+
+  return Math.max(0, toNumber_(numericSource));
+}
+
+
+function hasStock_(value) {
+  return value === "ASK" || (
+    typeof value === "number" &&
+    value >= 1
+  );
 }
 
 
