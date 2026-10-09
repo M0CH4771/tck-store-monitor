@@ -909,6 +909,14 @@
       padding: 0 4px 4px;
     }
 
+    .grid.is-name-hidden .price-grid.is-single-price {
+      grid-template-rows: minmax(0, 1fr);
+    }
+
+    .grid:not(.is-name-hidden) .card.has-single-price .price-box {
+      grid-column: 3 / 5;
+    }
+
     .grid.is-name-hidden .price-box {
       grid-template-columns: auto minmax(0, 1fr) auto;
       grid-template-rows: minmax(0, 1fr);
@@ -2082,6 +2090,11 @@
           prices.append(
             createPriceBox("状態特価", product.specialPrice, product.specialPriceText, product.specialStock, true, hasSpecial)
           );
+        }
+
+        if (prices.childElementCount === 1) {
+          prices.classList.add("is-single-price");
+          card.classList.add("has-single-price");
         }
 
         card.append(imageWrap, name, prices);
