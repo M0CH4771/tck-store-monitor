@@ -1,14 +1,9 @@
 /*
  * 商品自体は「通常在庫または特価在庫が1点以上」の条件で絞り込む。
- * 表示対象になった商品では、片方が0点でも両方の価格枠を残す。
+ * 在庫0の価格枠は非表示にし、在庫がある価格枠だけを表示する。
  */
 .price-box.is-unavailable,
 .grid .price-box.is-unavailable,
 .grid.is-name-hidden .price-box.is-unavailable {
-  display: grid !important;
-  opacity: 1 !important;
-}
-
-.grid.is-name-hidden .price-grid:has(.price-box.is-unavailable) {
-  grid-template-rows: repeat(2, minmax(0, 1fr)) !important;
+  display: none !important;
 }
