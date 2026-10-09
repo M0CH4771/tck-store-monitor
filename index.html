@@ -19,7 +19,11 @@
           html = html.replace(search, replacement);
         };
 
-        replaceRequired(
+                html = html.replace(/nameScale:\s*\[70,\s*170\]/, "nameScale: [70, 240]");
+        html = html.replace(/id="nameScaleInput" type="range" min="70" max="170"/, 'id="nameScaleInput" type="range" min="70" max="240"');
+        html = html.replace(/const nameCap = Math\.max\(11, Math\.min\(rowHeight \* \.12, infoWidth \* \.1\)\);/, 'const nameCap = Math.max(11, Math.min(rowHeight * .24, infoWidth * .16));');
+
+replaceRequired(
 `          <select id="pageSizeInput">
             <option value="6">6商品（1段）</option>
             <option value="12">12商品（2段）</option>
