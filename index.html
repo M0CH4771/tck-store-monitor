@@ -19,9 +19,18 @@
           html = html.replace(search, replacement);
         };
 
-                html = html.replace(/nameScale:\s*\[70,\s*170\]/, "nameScale: [70, 240]");
-        html = html.replace(/id="nameScaleInput" type="range" min="70" max="170"/, 'id="nameScaleInput" type="range" min="70" max="240"');
-        html = html.replace(/const nameCap = Math\.max\(11, Math\.min\(rowHeight \* \.12, infoWidth \* \.1\)\);/, 'const nameCap = Math.max(11, Math.min(rowHeight * .24, infoWidth * .16));');
+                        html = html.replace(/nameScale:\s*\[70,\s*170\]/, "nameScale: [70, 300]");
+                html = html.replace(/id="nameScaleInput" type="range" min="70" max="170"/, 'id="nameScaleInput" type="range" min="70" max="300"');
+                html = html.replace(/id="titleScaleInput" type="range" min="60" max="180"/, 'id="titleScaleInput" type="range" min="60" max="300"');
+        html = html.replace(/id="imageScaleInput" type="range" min="60" max="140"/, 'id="imageScaleInput" type="range" min="60" max="300"');
+        html = html.replace(/id="priceScaleInput" type="range" min="70" max="160"/, 'id="priceScaleInput" type="range" min="70" max="300"');
+        html = html.replace(/id="stockScaleInput" type="range" min="70" max="160"/, 'id="stockScaleInput" type="range" min="70" max="300"');
+        html = html.replace(/id="labelScaleInput" type="range" min="70" max="150"/, 'id="labelScaleInput" type="range" min="70" max="300"');
+        html = html.replace(/titleScale: \[60, 180\]/, 'titleScale: [60, 300]');
+        html = html.replace(/imageScale: \[60, 140\]/, 'imageScale: [60, 300]');
+        html = html.replace(/priceScale: \[70, 160\]/, 'priceScale: [70, 300]');
+        html = html.replace(/stockScale: \[70, 160\]/, 'stockScale: [70, 300]');
+        html = html.replace(/labelScale: \[70, 150\]/, 'labelScale: [70, 300]');
 
 replaceRequired(
 `          <select id="pageSizeInput">
