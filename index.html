@@ -99,17 +99,17 @@ replaceRequired(
         const rowHeight = usableHeight / layout.rows;
         const frameWidth = columnWidth;
         const frameHeight = rowHeight;
-        const imageScale = Math.max(.6, Math.min(1.4, state.settings.imageScale / 100));
+                const imageScale = Math.max(.6, Math.min(3, state.settings.imageScale / 100));
         // カード境界2px + 画像枠の上下余白8pxを除いた内寸を3:4にする。
         const naturalImageColumn = Math.max(72, (rowHeight - 10) * .75 + 8);
         const minimumInfoWidth = Math.min(230, Math.max(150, frameWidth * .46));
         const maximumImageColumn = Math.max(72, frameWidth - minimumInfoWidth);
         const imageColumn = Math.min(naturalImageColumn, naturalImageColumn * imageScale, maximumImageColumn);
         const infoWidth = Math.max(1, frameWidth - imageColumn);
-        const priceCap = Math.max(20, Math.min(rowHeight * .24, infoWidth / 5.4));
-        const stockCap = Math.max(14, Math.min(rowHeight * .18, infoWidth * .17));
-        const labelCap = Math.max(10, Math.min(rowHeight * .11, infoWidth * .1));
-                const nameCap = Math.max(11, Math.min(rowHeight * .24, infoWidth * .16));
+                const priceCap = Math.max(20, Math.min(rowHeight * .24, infoWidth / 5.4)) * state.settings.priceScale / 100;
+                const stockCap = Math.max(14, Math.min(rowHeight * .18, infoWidth * .17)) * state.settings.stockScale / 100;
+                const labelCap = Math.max(10, Math.min(rowHeight * .11, infoWidth * .1)) * state.settings.labelScale / 100;
+                        const nameCap = Math.max(11, Math.min(rowHeight * .24, infoWidth * .16)) * state.settings.nameScale / 100;
         document.documentElement.style.setProperty("--card-frame-width", frameWidth.toFixed(2) + "px");
         document.documentElement.style.setProperty("--card-frame-height", frameHeight.toFixed(2) + "px");
         document.documentElement.style.setProperty("--card-image-column", imageColumn.toFixed(2) + "px");
