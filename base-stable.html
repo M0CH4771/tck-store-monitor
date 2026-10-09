@@ -1233,6 +1233,12 @@
       min-width: 0;
     }
 
+
+<style>
+/* 0在庫の価格枠を隠し、残る1枠を2段分の高さにする */
+.price-box.is-unavailable { display: none !important; }
+.grid.is-name-hidden .price-grid.is-single-price > .price-box { grid-row: 1 / -1 !important; }
+</style>
     .range-field-head {
       display: flex;
       align-items: center;
@@ -2379,3 +2385,9 @@
   </script>
 </body>
 </html>
+
+<style>
+/* 0在庫の価格枠を隠し、残る1枠を2段分の高さにする */
+.price-box.is-unavailable { display: none !important; }
+.grid.is-name-hidden .price-grid.is-single-price > .price-box { grid-row: 1 / -1 !important; }
+</style>
