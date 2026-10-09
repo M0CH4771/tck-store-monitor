@@ -2070,10 +2070,19 @@
 
         const prices = document.createElement("div");
         prices.className = "price-grid";
-        prices.append(
-          createPriceBox("通常価格", product.normalPrice, product.normalPriceText, product.normalStock, false, hasNormal),
-          createPriceBox("状態特価", product.specialPrice, product.specialPriceText, product.specialStock, true, hasSpecial)
-        );
+        const hideNormalPrice = product.normalPrice === 0
+          && hasSpecial
+          && (product.specialPrice !== null || product.specialPriceText !== "");
+        if (hideNormalPrice) {
+          prices.append(
+            createPriceBox("状態特価", product.specialPrice, product.specialPriceText, product.specialStock, true, hasSpecial)
+          );
+        } else {
+          prices.append(
+            createPriceBox("通常価格", product.normalPrice, product.normalPriceText, product.normalStock, false, hasNormal),
+            createPriceBox("状態特価", product.specialPrice, product.specialPriceText, product.specialStock, true, hasSpecial)
+          );
+        }
 
         card.append(imageWrap, name, prices);
         return card;
