@@ -1234,12 +1234,27 @@
     }
 
 
-<style>
-/* 0在庫の価格枠を隠し、残る1枠を2段分の高さにする */
-.price-box.is-unavailable { display: none !important; }
-.grid.is-name-hidden .price-grid.is-single-price > .price-box { grid-row: 1 / -1 !important; }
-</style>
-    .range-field-head {
+
+        /* 残る価格枠をカードの2段分まで拡大 */
+    .grid.is-name-hidden .price-grid.is-single-price {
+      grid-template-rows: repeat(2, minmax(0, 1fr)) !important;
+    }
+    .grid.is-name-hidden .price-grid.is-single-price > .price-box {
+      grid-row: 1 / -1 !important;
+    }
+    .grid:not(.is-name-hidden) .card.has-single-price {
+      grid-template-rows: repeat(2, minmax(0, 1fr)) !important;
+    }
+    .grid:not(.is-name-hidden) .card.has-single-price .image-wrap,
+    .grid:not(.is-name-hidden) .card.has-single-price .card-name {
+      grid-row: 1 / -1 !important;
+    }
+    .grid:not(.is-name-hidden) .card.has-single-price .price-box {
+      grid-column: 3 / 5 !important;
+      grid-row: 1 / -1 !important;
+    }
+
+.range-field-head {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -1325,7 +1340,7 @@
         transition-duration: .01ms !important;
       }
     }
-  </style>
+  
 </head>
 <body>
   <main class="app" aria-live="polite">
@@ -2386,8 +2401,4 @@
 </body>
 </html>
 
-<style>
-/* 0在庫の価格枠を隠し、残る1枠を2段分の高さにする */
-.price-box.is-unavailable { display: none !important; }
-.grid.is-name-hidden .price-grid.is-single-price > .price-box { grid-row: 1 / -1 !important; }
-</style>
+
